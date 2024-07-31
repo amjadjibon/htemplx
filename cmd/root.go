@@ -22,6 +22,7 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(serveCmd)
 }
 
 func Execute() {
