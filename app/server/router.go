@@ -30,6 +30,7 @@ func setupRouter() http.Handler {
 
 	// setup routers
 	r.Get("/healthz", handler.Healthz)
+	r.Get("/", handler.Index)
 
 	return r
 }
