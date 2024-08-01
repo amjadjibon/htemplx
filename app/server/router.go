@@ -7,8 +7,9 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
-	"htemplx/app/handler"
-	appMiddleware "htemplx/app/middleware"
+	appMiddleware "htemplx/app/middlewares"
+
+	"htemplx/app/handlers"
 )
 
 func setupRouter() http.Handler {
@@ -29,10 +30,12 @@ func setupRouter() http.Handler {
 	}))
 
 	// setup routers
-	r.Get("/healthz", handler.Healthz)
-	r.Get("/", handler.Index)
-	r.Get("/about", handler.About)
-	r.Get("/contact", handler.Contact)
+	r.Get("/healthz", handlers.Healthz)
+
+	r.Get("/", handlers.Index)
+	r.Get("/services", handlers.Services)
+	r.Get("/about", handlers.About)
+	r.Get("/contact", handlers.Contact)
 
 	return r
 }

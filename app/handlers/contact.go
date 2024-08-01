@@ -1,9 +1,9 @@
-package handler
+package handlers
 
 import (
 	"net/http"
 
-	"htemplx/app/view/pages"
+	"htemplx/app/views/pages"
 )
 
 func Contact(w http.ResponseWriter, r *http.Request) {

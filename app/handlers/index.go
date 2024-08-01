@@ -1,8 +1,9 @@
-package handler
+package handlers
 
 import (
-	"htemplx/app/view/pages"
 	"net/http"
+
+	"htemplx/app/views/pages"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {

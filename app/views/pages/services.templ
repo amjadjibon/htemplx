@@ -1,0 +1,13 @@
+package pages
+
+import (
+	"htemplx/app/views/components"
+	"htemplx/app/views/layouts"
+)
+
+templ Services(title string) {
+	@layouts.Base(title) {
+		@components.Navbar()
+		<h1>Services</h1>
+	}
+}

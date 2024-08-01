@@ -1,0 +1,13 @@
+package pages
+
+import (
+    "htemplx/app/views/components"
+    "htemplx/app/views/layouts"
+)
+
+templ Contact(title string) {
+    @layouts.Base(title) {
+        @components.Navbar()
+        <h1>Contact</h1>
+    }
+}

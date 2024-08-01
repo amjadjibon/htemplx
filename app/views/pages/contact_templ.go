@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"htemplx/app/view/components"
-	"htemplx/app/view/layouts"
+	"htemplx/app/views/components"
+	"htemplx/app/views/layouts"
 )
 
 func Contact(title string) templ.Component {
