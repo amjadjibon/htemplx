@@ -1,13 +1,13 @@
 package server
 
 import (
-	"htemplx/app/handler"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 
+	"htemplx/app/handler"
 	appMiddleware "htemplx/app/middleware"
 )
 
@@ -31,6 +31,8 @@ func setupRouter() http.Handler {
 	// setup routers
 	r.Get("/healthz", handler.Healthz)
 	r.Get("/", handler.Index)
+	r.Get("/about", handler.About)
+	r.Get("/contact", handler.Contact)
 
 	return r
 }

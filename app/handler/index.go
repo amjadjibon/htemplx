@@ -6,5 +6,5 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	Render(w, r, pages.Index("Home"))
+	Render(w, r, pages.Index("htemplx"))
 }
