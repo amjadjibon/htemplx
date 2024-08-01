@@ -24,6 +24,13 @@ go.work.sum
 # Binary folder
 bin/
 
+# Temp folder
+tmp/
+
 # Environment files
 .env
 .envrc
+
+# IDE
+.idea/
+.vscode/

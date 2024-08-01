@@ -1,11 +1,20 @@
 clean:
-	rm -r bin
+	rm -rf bin tmp
 
-build: gen
+build: templ-generate
 	go build -o bin/htemplx main.go
 
 serve: build
 	./bin/htemplx serve
 
-gen:
+templ-install:
+	go install github.com/a-h/templ/cmd/templ@latest
+
+templ-generate:
 	templ generate
+
+air-install:
+	go install github.com/air-verse/air@latest
+
+run:
+	air -c .air.toml
