@@ -6,7 +6,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-func Render(
+func render(
 	w http.ResponseWriter,
 	r *http.Request,
 	comp templ.Component,

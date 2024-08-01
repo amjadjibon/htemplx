@@ -18,7 +18,7 @@ func Logger(next http.Handler) http.Handler {
 				"query", r.URL.Query(),
 				"ip", r.RemoteAddr,
 				"user_agent", r.UserAgent(),
-				"request_id", GetReqestID(r.Context()),
+				"request_id", GetRequestID(r.Context()),
 				"elapsed", time.Since(start).String(),
 			)
 		}()

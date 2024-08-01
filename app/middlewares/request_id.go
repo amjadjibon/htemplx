@@ -23,7 +23,7 @@ func RequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func GetReqestID(ctx context.Context) string {
+func GetRequestID(ctx context.Context) string {
 	if ctx == nil {
 		return ""
 	}

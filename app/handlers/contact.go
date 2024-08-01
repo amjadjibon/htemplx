@@ -7,5 +7,5 @@ import (
 )
 
 func Contact(w http.ResponseWriter, r *http.Request) {
-	Render(w, r, pages.Contact("htemplx"))
+	render(w, r, pages.Contact("htemplx"))
 }

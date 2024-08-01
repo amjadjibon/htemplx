@@ -7,5 +7,5 @@ import (
 )
 
 func Services(w http.ResponseWriter, r *http.Request) {
-	Render(w, r, pages.Services("htemplx"))
+	render(w, r, pages.Services("htemplx"))
 }
