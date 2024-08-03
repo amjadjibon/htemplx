@@ -19,8 +19,7 @@ func Run() {
 	cfg := conf.NewConfig()
 
 	// set default slog logger
-	slogger := logger.GetLogger(cfg.LogLevel)
-	logger.SetDefault(slogger)
+	logger.SetDefault(logger.GetLogger(cfg.LogLevel))
 
 	// define server properties
 	server := &http.Server{

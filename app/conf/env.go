@@ -6,6 +6,7 @@ import (
 	"github.com/caarlos0/env/v11"
 )
 
+//go:generate go run github.com/g4s8/envdoc -output ../../docs/env.md -format markdown
 type Config struct {
 	HttpHost         string        `env:"HOST" envDefault:"0.0.0.0"`
 	HttpPort         int           `env:"PORT" envDefault:"8080"`
