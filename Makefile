@@ -1,7 +1,7 @@
 clean:
 	rm -rf bin tmp
 
-build: templ-generate
+build: templ-generate tailwind-gen
 	go build -o bin/htemplx main.go
 
 serve: build
@@ -18,3 +18,6 @@ air-install:
 
 run:
 	air -c .air.toml
+
+tailwind-gen:
+	npx tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css

@@ -41,6 +41,9 @@ func setupRouter() http.Handler {
 	r.Get("/about", handlers.About)
 	r.Get("/contact", handlers.Contact)
 
+	// default not found page
+	r.NotFound(handlers.NotFound)
+
 	return r
 }
 
