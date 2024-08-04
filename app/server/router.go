@@ -43,7 +43,11 @@ func setupRouter() http.Handler {
 
 	r.Get("/login", handlers.Login)
 	r.Get("/register", handlers.Register)
-	r.Get("/forget-password", handlers.ForgetPassword)
+	r.Get("/forgot-password", handlers.ForgotPassword)
+	r.Get("/under-construction", handlers.UnderConstruction)
+	r.Get("/under-construction", handlers.UnderConstruction)
+	r.Get("/terms-and-conditions", handlers.TermsAndConditions)
+	r.Get("/privacy-policy", handlers.Privacy)
 
 	// default not found page
 	r.NotFound(handlers.NotFound)

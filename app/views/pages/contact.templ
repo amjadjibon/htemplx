@@ -8,7 +8,9 @@ import (
 templ Contact(title string) {
     @layouts.Base(title) {
         @components.Navbar()
-        @components.Contact()
+        <div class="pt-5">
+            @components.Contact()
+        </div>
         @components.Footer()
     }
 }

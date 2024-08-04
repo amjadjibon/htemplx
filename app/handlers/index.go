@@ -19,6 +19,18 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.Register())
 }
 
-func ForgetPassword(w http.ResponseWriter, r *http.Request) {
-	render(w, r, components.ForgetPassword())
+func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+	render(w, r, components.ForgotPassword())
+}
+
+func UnderConstruction(w http.ResponseWriter, r *http.Request) {
+	render(w, r, components.UnderConstruction())
+}
+
+func TermsAndConditions(w http.ResponseWriter, r *http.Request) {
+	render(w, r, pages.Terms("htemplx"))
+}
+
+func Privacy(w http.ResponseWriter, r *http.Request) {
+	render(w, r, pages.Privacy("htemplx"))
 }

@@ -8,8 +8,10 @@ import (
 templ Services(title string) {
 	@layouts.Base(title) {
 		@components.Navbar()
-          <h1 class="text-3xl font-bold underline">
-            Services
-          </h1>
+        <div class="pt-20">
+            @components.PasteBin()
+        </div>
+        @components.NewsLetter()
+        @components.Footer()
 	}
 }

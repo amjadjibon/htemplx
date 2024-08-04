@@ -5,10 +5,13 @@ import (
 	"htemplx/app/views/layouts"
 )
 
-templ About(title string) {
+templ Terms(title string) {
 	@layouts.Base(title) {
 		@components.Navbar()
-        @components.About()
+        <div class="pt-20">
+            @components.UnderConstruction()
+        </div>
+        @components.NewsLetter()
         @components.Footer()
 	}
 }
