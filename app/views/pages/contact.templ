@@ -8,8 +8,7 @@ import (
 templ Contact(title string) {
     @layouts.Base(title) {
         @components.Navbar()
-          <h1 class="text-3xl font-bold underline">
-            Contact
-          </h1>
+        @components.Contact()
+        @components.Footer()
     }
 }

@@ -8,8 +8,7 @@ import (
 templ Index(title string) {
 	@layouts.Base(title) {
         @components.Navbar()
-          <h1 class="text-3xl font-bold underline">
-            Index
-          </h1>
+        @components.Login()
+        @components.Footer()
 	}
 }
