@@ -11,6 +11,7 @@ import (
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 
 	_ "htemplx/app/docs"
+	"htemplx/app/domain"
 	"htemplx/app/handlers"
 	"htemplx/app/repo"
 	"htemplx/pkg/dbx"
@@ -45,22 +46,6 @@ func setupRouter() http.Handler {
 	// setup routers
 	r.Get("/healthz", handlers.Healthz)
 
-	r.Get("/", handlers.Index)
-	r.Get("/services", handlers.Services)
-	r.Get("/about", handlers.About)
-	r.Get("/contact", handlers.Contact)
-
-	r.Get("/login", handlers.Login)
-	r.Get("/register", handlers.Register)
-	r.Get("/forgot-password", handlers.ForgotPassword)
-	r.Get("/under-construction", handlers.UnderConstruction)
-	r.Get("/under-construction", handlers.UnderConstruction)
-	r.Get("/terms-and-conditions", handlers.TermsAndConditions)
-	r.Get("/privacy-policy", handlers.Privacy)
-
-	// default not found page
-	r.NotFound(handlers.NotFound)
-
 	nDBX := dbx.NewDBX(
 		"postgres://rootuser:rootpassword@localhost:5432/htemplx_db?sslmode=disable",
 		5,
@@ -68,9 +53,28 @@ func setupRouter() http.Handler {
 		20*time.Minute,
 		30*time.Minute,
 	)
+	usersRepo := repo.NewUsersRepo(nDBX)
+	usersDomain := domain.NewUsersDomain(usersRepo)
 
-	userRepo := repo.NewUsersRepo(nDBX)
-	apiHandler := handlers.NewApiHandler(userRepo)
+	webHandler := handlers.NewWebHandler(usersDomain)
+	r.Get("/", webHandler.Index)
+	r.Get("/services", webHandler.Services)
+	r.Get("/about", webHandler.About)
+	r.Get("/contact", webHandler.Contact)
+	r.Get("/login", webHandler.Login)
+	r.Post("/sign-in", webHandler.SignIn)
+	r.Get("/register", webHandler.Register)
+	r.Post("/sign-up", webHandler.SignUp)
+	r.Get("/forgot-password", webHandler.ForgotPassword)
+	r.Get("/under-construction", webHandler.UnderConstruction)
+	r.Get("/under-construction", webHandler.UnderConstruction)
+	r.Get("/terms-and-conditions", webHandler.TermsAndConditions)
+	r.Get("/privacy-policy", webHandler.Privacy)
+
+	// default not found page
+	r.NotFound(webHandler.NotFound)
+
+	apiHandler := handlers.NewApiHandler(usersDomain)
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Post("/users", apiHandler.CreateUser)
 		r.Get("/users", apiHandler.GetUserList)

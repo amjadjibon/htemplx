@@ -90,3 +90,18 @@ func (u *UsersRepo) DeleteUser(ctx context.Context, id string) error {
 	_, err = u.dbx.SqlxDB.ExecContext(ctx, sql, args...)
 	return err
 }
+
+func (u *UsersRepo) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	user := &models.User{}
+	sql, args, err := u.dbx.Builder.
+		Select("id", "first_name", "last_name", "username", "email", "password").
+		From(UsersTableName).
+		Where("email = ?", email).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	err = u.dbx.SqlxDB.GetContext(ctx, user, sql, args...)
+	return user, err
+}

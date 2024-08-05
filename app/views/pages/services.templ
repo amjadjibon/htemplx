@@ -8,9 +8,7 @@ import (
 templ Services(title string) {
 	@layouts.Base(title) {
 		@components.Navbar()
-        <div class="pt-20">
-            @components.PasteBin()
-        </div>
+        @components.PasteBin()
         @components.NewsLetter()
         @components.Footer()
 	}

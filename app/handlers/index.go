@@ -3,51 +3,91 @@ package handlers
 import (
 	"net/http"
 
+	"htemplx/app/domain"
 	"htemplx/app/views/components"
 	"htemplx/app/views/pages"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+type WebHandler struct {
+	usersDomain *domain.UsersDomain
+}
+
+func NewWebHandler(usersDomain *domain.UsersDomain) WebHandler {
+	return WebHandler{usersDomain: usersDomain}
+}
+
+// Index renders the index page
+func (h *WebHandler) Index(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Index("htemplx"))
 }
 
-func About(w http.ResponseWriter, r *http.Request) {
+// About renders the about page
+func (h *WebHandler) About(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.About("htemplx"))
 }
 
-func Contact(w http.ResponseWriter, r *http.Request) {
+// Contact renders the contact page
+func (h *WebHandler) Contact(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Contact("htemplx"))
 }
 
-func NotFound(w http.ResponseWriter, r *http.Request) {
+// NotFound renders the 404 not found page
+func (h *WebHandler) NotFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	render(w, r, pages.NotFound("htemplx"))
 }
 
-func Services(w http.ResponseWriter, r *http.Request) {
+// Services renders the services page
+func (h *WebHandler) Services(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Services("htemplx"))
 }
 
-func Login(w http.ResponseWriter, r *http.Request) {
+// Login renders the login page
+func (h *WebHandler) Login(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.Login())
 }
 
-func Register(w http.ResponseWriter, r *http.Request) {
+// SignIn renders the pastebin page (adjust the name if needed)
+func (h *WebHandler) SignIn(w http.ResponseWriter, r *http.Request) {
+	_, err := h.usersDomain.Login(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	render(w, r, components.PasteBin())
+}
+
+// Register renders the registration page
+func (h *WebHandler) Register(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.Register())
 }
 
-func ForgotPassword(w http.ResponseWriter, r *http.Request) {
+// SignUp renders the registration page
+func (h *WebHandler) SignUp(w http.ResponseWriter, r *http.Request) {
+	_, err := h.usersDomain.CreateUsers(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	render(w, r, components.Login())
+}
+
+// ForgotPassword renders the forgot password page
+func (h *WebHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.ForgotPassword())
 }
 
-func UnderConstruction(w http.ResponseWriter, r *http.Request) {
+// UnderConstruction renders the under construction page
+func (h *WebHandler) UnderConstruction(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.UnderConstruction())
 }
 
-func TermsAndConditions(w http.ResponseWriter, r *http.Request) {
+// TermsAndConditions renders the terms and conditions page
+func (h *WebHandler) TermsAndConditions(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Terms("htemplx"))
 }
 
-func Privacy(w http.ResponseWriter, r *http.Request) {
+// Privacy renders the privacy policy page
+func (h *WebHandler) Privacy(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Privacy("htemplx"))
 }

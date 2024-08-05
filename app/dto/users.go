@@ -39,3 +39,8 @@ type DeleteUserResponse struct {
 type ErrorResponse struct {
 	Message string `json:"message" example:"An error occurred"`
 }
+
+type LoginRequest struct {
+	Email    string `json:"email" example:"jon.doe@gmail.com"`
+	Password string `json:"password" example:"******"`
+}

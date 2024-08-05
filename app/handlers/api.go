@@ -5,16 +5,15 @@ import (
 	"net/http"
 
 	"htemplx/app/domain"
-	"htemplx/app/repo"
 )
 
 type ApiHandler struct {
 	usersDomain *domain.UsersDomain
 }
 
-func NewApiHandler(userRepo *repo.UsersRepo) ApiHandler {
+func NewApiHandler(userDomain *domain.UsersDomain) ApiHandler {
 	return ApiHandler{
-		usersDomain: domain.NewUsersDomain(userRepo),
+		usersDomain: userDomain,
 	}
 }
 

@@ -23,17 +23,38 @@ func NewUsersDomain(usersRepo *repo.UsersRepo) *UsersDomain {
 	return &UsersDomain{usersRepo: usersRepo}
 }
 
+// CreateUsers processes the user creation request
 func (u *UsersDomain) CreateUsers(r *http.Request) (*dto.CreateUserResponse, error) {
 	var req dto.CreateUserRequest
-	err := json.NewDecoder(r.Body).Decode(&req)
-	if err != nil {
-		return nil, err
+	var err error
+
+	// Check if the request expects JSON
+	if r.Header.Get("Content-Type") == "application/json" {
+		err = json.NewDecoder(r.Body).Decode(&req)
+		if err != nil {
+			return nil, err
+		}
+	} else if r.Header.Get("HX-Request") == "true" &&
+		r.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
+		// Parse form data
+		if err = r.ParseForm(); err != nil {
+			return nil, err
+		}
+
+		req.FirstName = r.FormValue("first_name")
+		req.LastName = r.FormValue("last_name")
+		req.Username = r.FormValue("username")
+		req.Email = r.FormValue("email")
+		req.Password = r.FormValue("password")
+	} else {
+		return nil, errors.New("unsupported content type")
 	}
 
-	if req.Username == "" || req.Email == "" || req.Password == "" {
+	if req.Email == "" || req.Password == "" {
 		return nil, errors.New("missing required fields")
 	}
 
+	// Create user object
 	user := &models.User{
 		ID:        uuid.New(),
 		FirstName: req.FirstName,
@@ -44,11 +65,13 @@ func (u *UsersDomain) CreateUsers(r *http.Request) (*dto.CreateUserResponse, err
 		CreatedAt: time.Now(),
 	}
 
+	// Store user in repository
 	err = u.usersRepo.CreateUser(r.Context(), user)
 	if err != nil {
 		return nil, err
 	}
 
+	// Return response
 	resp := &dto.CreateUserResponse{
 		ID: user.ID,
 	}
@@ -149,4 +172,40 @@ func (u *UsersDomain) DeleteUser(r *http.Request) (*dto.DeleteUserResponse, erro
 	}
 
 	return resp, nil
+}
+
+// Login processes the login form submission
+func (u *UsersDomain) Login(r *http.Request) (*dto.UserResponse, error) {
+	// Parse form data
+	if err := r.ParseForm(); err != nil {
+		return nil, err
+	}
+
+	// Extract form values
+	email := r.FormValue("email")
+	password := r.FormValue("password")
+
+	if email == "" || password == "" {
+		return nil, errors.New("missing required fields")
+	}
+
+	// Get user by email
+	user, err := u.usersRepo.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		return nil, err
+	}
+
+	// Validate password
+	if user.Password != password {
+		return nil, errors.New("password incorrect")
+	}
+
+	// Return user response
+	return &dto.UserResponse{
+		ID:        user.ID,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Username:  user.Username,
+		Email:     user.Email,
+	}, nil
 }
