@@ -12,9 +12,9 @@ import (
 
 	_ "htemplx/app/docs"
 	"htemplx/app/handlers"
-	appMiddleware "htemplx/app/middlewares"
 	"htemplx/app/repo"
 	"htemplx/pkg/dbx"
+	"htemplx/pkg/middlewares"
 	"htemplx/public"
 )
 
@@ -22,8 +22,8 @@ func setupRouter() http.Handler {
 	r := chi.NewRouter()
 
 	// setup middlewares
-	r.Use(appMiddleware.RequestID)
-	r.Use(appMiddleware.Logger)
+	r.Use(middlewares.RequestID)
+	r.Use(middlewares.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.RealIP)
 	r.Use(cors.Handler(cors.Options{

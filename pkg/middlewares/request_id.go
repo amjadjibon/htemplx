@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"htemplx/app/logger"
+	"htemplx/pkg/logger"
 )
 
 func RequestID(next http.Handler) http.Handler {

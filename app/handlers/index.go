@@ -11,6 +11,23 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	render(w, r, pages.Index("htemplx"))
 }
 
+func About(w http.ResponseWriter, r *http.Request) {
+	render(w, r, pages.About("htemplx"))
+}
+
+func Contact(w http.ResponseWriter, r *http.Request) {
+	render(w, r, pages.Contact("htemplx"))
+}
+
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotFound)
+	render(w, r, pages.NotFound("htemplx"))
+}
+
+func Services(w http.ResponseWriter, r *http.Request) {
+	render(w, r, pages.Services("htemplx"))
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.Login())
 }

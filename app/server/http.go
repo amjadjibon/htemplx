@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"htemplx/app/conf"
-	"htemplx/app/logger"
+	"htemplx/pkg/logger"
 )
 
 func Run() {
