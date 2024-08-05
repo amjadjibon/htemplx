@@ -24,6 +24,8 @@ func NewApiHandler(userRepo *repo.UsersRepo) ApiHandler {
 
 // CreateUser example
 //
+//	@Summary	Add a new user
+//	@Tags		Users
 //	@Accept		json
 //	@Produce	json
 //	@Param		json	body		dto.CreateUserRequest	true	"Create user request"
@@ -69,6 +71,8 @@ func (a *ApiHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 // GetUserList example
 //
+//	@Summary	Get all users
+//	@Tags		Users
 //	@Produce	json
 //	@Success	200	{array}	dto.UserResponse	"User list response"
 //	@Router		/users [get]
@@ -96,6 +100,8 @@ func (a *ApiHandler) GetUserList(w http.ResponseWriter, r *http.Request) {
 
 // GetUserByID example
 //
+//	@Summary	Get a user
+//	@Tags		Users
 //	@Produce	json
 //	@Param		id	path		string				true	"User ID"
 //	@Success	200	{object}	dto.UserResponse	"User response"
@@ -127,6 +133,8 @@ func (a *ApiHandler) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 // UpdateUser example
 //
+//	@Summary	Update user
+//	@Tags		Users
 //	@Accept		json
 //	@Produce	json
 //	@Param		id		path		string					true	"User ID"
@@ -176,6 +184,8 @@ func (a *ApiHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 // DeleteUser example
 //
+//	@Summary	Delete user
+//	@Tags		Users
 //	@Param		id	path	string	true	"User ID"
 //	@Success	204	"User deleted successfully"
 //	@Router		/users/{id} [delete]

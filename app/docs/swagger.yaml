@@ -85,6 +85,9 @@ paths:
             items:
               $ref: '#/definitions/dto.UserResponse'
             type: array
+      summary: Get all users
+      tags:
+      - Users
     post:
       consumes:
       - application/json
@@ -102,6 +105,9 @@ paths:
           description: Create user response
           schema:
             $ref: '#/definitions/dto.CreateUserResponse'
+      summary: Add a new user
+      tags:
+      - Users
   /users/{id}:
     delete:
       parameters:
@@ -113,6 +119,9 @@ paths:
       responses:
         "204":
           description: User deleted successfully
+      summary: Delete user
+      tags:
+      - Users
     get:
       parameters:
       - description: User ID
@@ -127,6 +136,9 @@ paths:
           description: User response
           schema:
             $ref: '#/definitions/dto.UserResponse'
+      summary: Get a user
+      tags:
+      - Users
     put:
       consumes:
       - application/json
@@ -149,4 +161,7 @@ paths:
           description: Update user response
           schema:
             $ref: '#/definitions/dto.UserResponse'
+      summary: Update user
+      tags:
+      - Users
 swagger: "2.0"

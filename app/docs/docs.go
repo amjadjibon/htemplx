@@ -29,6 +29,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
                 "responses": {
                     "200": {
                         "description": "User list response",
@@ -48,6 +52,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Add a new user",
                 "parameters": [
                     {
                         "description": "Create user request",
@@ -74,6 +82,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get a user",
                 "parameters": [
                     {
                         "type": "string",
@@ -99,6 +111,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user",
                 "parameters": [
                     {
                         "type": "string",
@@ -127,6 +143,10 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete user",
                 "parameters": [
                     {
                         "type": "string",
