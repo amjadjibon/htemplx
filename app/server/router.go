@@ -36,7 +36,7 @@ func setupRouter() http.Handler {
 	}))
 
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.URL("/swagger/doc.json"), // The url pointing to API definition
 	))
 
 	// Serve embedded files from the "public" directory
@@ -69,10 +69,14 @@ func setupRouter() http.Handler {
 		30*time.Minute,
 	)
 
-	userRepo := repo.NewUserRepo(nDBX)
+	userRepo := repo.NewUsersRepo(nDBX)
 	apiHandler := handlers.NewApiHandler(userRepo)
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Post("/users", apiHandler.CreateUser)
+		r.Get("/users", apiHandler.GetUserList)
+		r.Get("/users/{id}", apiHandler.GetUserByID)
+		r.Put("/users/{id}", apiHandler.UpdateUser)
+		r.Delete("/users/{id}", apiHandler.DeleteUser)
 	})
 
 	return r

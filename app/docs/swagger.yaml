@@ -24,6 +24,42 @@ definitions:
         example: 1879829d-0252-4d03-bd9d-980af59dfe2b
         type: string
     type: object
+  dto.UpdateUserRequest:
+    properties:
+      email:
+        example: jon.doe@gmail.com
+        type: string
+      first_name:
+        example: Jon
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      password:
+        example: '******'
+        type: string
+      username:
+        example: jon.doe
+        type: string
+    type: object
+  dto.UserResponse:
+    properties:
+      email:
+        example: jon.doe@gmail.com
+        type: string
+      first_name:
+        example: Jon
+        type: string
+      id:
+        example: 1879829d-0252-4d03-bd9d-980af59dfe2b
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      username:
+        example: jon.doe
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -39,6 +75,16 @@ info:
   version: "1.0"
 paths:
   /users:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User list response
+          schema:
+            items:
+              $ref: '#/definitions/dto.UserResponse'
+            type: array
     post:
       consumes:
       - application/json
@@ -56,4 +102,51 @@ paths:
           description: Create user response
           schema:
             $ref: '#/definitions/dto.CreateUserResponse'
+  /users/{id}:
+    delete:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: User deleted successfully
+    get:
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User response
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update user request
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Update user response
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
 swagger: "2.0"
