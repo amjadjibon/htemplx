@@ -3,13 +3,18 @@ package server
 import (
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	httpSwagger "github.com/swaggo/http-swagger/v2"
 
+	_ "htemplx/app/docs"
 	"htemplx/app/handlers"
 	appMiddleware "htemplx/app/middlewares"
+	"htemplx/app/repo"
+	"htemplx/pkg/dbx"
 	"htemplx/public"
 )
 
@@ -29,6 +34,10 @@ func setupRouter() http.Handler {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/swagger/doc.json"), //The url pointing to API definition
+	))
 
 	// Serve embedded files from the "public" directory
 	fileServer(r, "/public", http.FS(public.AssetsFS))
@@ -52,6 +61,20 @@ func setupRouter() http.Handler {
 	// default not found page
 	r.NotFound(handlers.NotFound)
 
+	nDBX := dbx.NewDBX(
+		"postgres://rootuser:rootpassword@localhost:5432/htemplx_db?sslmode=disable",
+		5,
+		10,
+		20*time.Minute,
+		30*time.Minute,
+	)
+
+	userRepo := repo.NewUserRepo(nDBX)
+	apiHandler := handlers.NewApiHandler(userRepo)
+	r.Route("/api/v1", func(r chi.Router) {
+		r.Post("/users", apiHandler.CreateUser)
+	})
+
 	return r
 }
 
@@ -61,7 +84,7 @@ func fileServer(r chi.Router, path string, root http.FileSystem) {
 	}
 
 	if path != "/" && path[len(path)-1] != '/' {
-		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		r.Get(path, http.RedirectHandler(path+"/", http.StatusMovedPermanently).ServeHTTP)
 		path += "/"
 	}
 	path += "*"

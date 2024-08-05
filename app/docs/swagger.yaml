@@ -1,0 +1,59 @@
+basePath: /api/v1
+definitions:
+  dto.CreateUserRequest:
+    properties:
+      email:
+        example: jon.doe@gmail.com
+        type: string
+      first_name:
+        example: Jon
+        type: string
+      last_name:
+        example: Doe
+        type: string
+      password:
+        example: '******'
+        type: string
+      username:
+        example: jon.doe
+        type: string
+    type: object
+  dto.CreateUserResponse:
+    properties:
+      id:
+        example: 1879829d-0252-4d03-bd9d-980af59dfe2b
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@htemplx.io
+    name: API Support
+    url: http://localhost:8080/support
+  description: HTEMPLX API SERVER
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+  termsOfService: http://localhost:8080/terms-and-conditions/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create user request
+        in: body
+        name: json
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Create user response
+          schema:
+            $ref: '#/definitions/dto.CreateUserResponse'
+swagger: "2.0"
