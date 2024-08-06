@@ -13,6 +13,7 @@ import (
 	"htemplx/app/dto"
 	"htemplx/app/models"
 	"htemplx/app/repo"
+	"htemplx/pkg/passoword"
 )
 
 type UsersDomain struct {
@@ -54,6 +55,11 @@ func (u *UsersDomain) CreateUsers(r *http.Request) (*dto.CreateUserResponse, err
 		return nil, errors.New("missing required fields")
 	}
 
+	hashedPassword, err := passoword.HashPassword(req.Password)
+	if err != nil {
+		return nil, err
+	}
+
 	// Create user object
 	user := &models.User{
 		ID:        uuid.New(),
@@ -61,7 +67,7 @@ func (u *UsersDomain) CreateUsers(r *http.Request) (*dto.CreateUserResponse, err
 		LastName:  req.LastName,
 		Username:  req.Username,
 		Email:     req.Email,
-		Password:  req.Password,
+		Password:  hashedPassword,
 		CreatedAt: time.Now(),
 	}
 
@@ -183,9 +189,9 @@ func (u *UsersDomain) Login(r *http.Request) (*dto.UserResponse, error) {
 
 	// Extract form values
 	email := r.FormValue("email")
-	password := r.FormValue("password")
+	pass := r.FormValue("password")
 
-	if email == "" || password == "" {
+	if email == "" || pass == "" {
 		return nil, errors.New("missing required fields")
 	}
 
@@ -196,7 +202,7 @@ func (u *UsersDomain) Login(r *http.Request) (*dto.UserResponse, error) {
 	}
 
 	// Validate password
-	if user.Password != password {
+	if !passoword.CheckPassword(pass, user.Password) {
 		return nil, errors.New("password incorrect")
 	}
 
