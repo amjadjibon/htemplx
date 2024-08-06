@@ -5,9 +5,9 @@ import (
 	"htemplx/app/views/layouts"
 )
 
-templ Privacy(title string) {
+templ Privacy(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar()
+		@components.Navbar(loggedIn)
         <div class="pt-20">
             @components.UnderConstruction()
         </div>

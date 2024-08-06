@@ -5,10 +5,10 @@ import (
 	"htemplx/app/views/layouts"
 )
 
-templ Services(title string) {
+templ Services(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar()
-        @components.PasteBin()
+		@components.Navbar(loggedIn)
+        @components.UnderConstruction()
         @components.NewsLetter()
         @components.Footer()
 	}

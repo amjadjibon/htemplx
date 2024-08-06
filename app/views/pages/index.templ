@@ -7,13 +7,20 @@ import (
 
 templ Index(loggedIn bool, title string) {
     @layouts.Base(title) {
-        @components.Navbar()
-        if loggedIn {
-            @components.PasteBin()
-        } else {
-            @components.Login()
-        }
+        <div id="nav-login">
+            @components.Navbar(loggedIn)
+            if loggedIn {
+                @components.PasteBin()
+            } else {
+                @components.Login()
+            }
+        </div>
         @components.NewsLetter()
         @components.Footer()
     }
+}
+
+templ NavPasteBin(loggedIn bool) {
+    @components.Navbar(loggedIn)
+    @components.PasteBin()
 }

@@ -5,9 +5,9 @@ import (
     "htemplx/app/views/layouts"
 )
 
-templ Contact(title string) {
+templ Contact(loggedIn bool, title string) {
     @layouts.Base(title) {
-        @components.Navbar()
+        @components.Navbar(loggedIn)
         <div class="pt-5">
             @components.Contact()
         </div>

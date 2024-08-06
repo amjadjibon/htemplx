@@ -5,9 +5,9 @@ import (
 	"htemplx/app/views/layouts"
 )
 
-templ About(title string) {
+templ About(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar()
+		@components.Navbar(loggedIn)
         @components.About()
         @components.Footer()
 	}

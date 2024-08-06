@@ -5,9 +5,9 @@ import (
 	"htemplx/app/views/layouts"
 )
 
-templ Terms(title string) {
+templ Terms(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar()
+		@components.Navbar(loggedIn)
         <div class="pt-20">
             @components.UnderConstruction()
         </div>

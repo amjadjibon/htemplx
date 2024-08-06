@@ -85,6 +85,7 @@ func setupRouter() http.Handler {
 	r.Get("/contact", webHandler.Contact)
 	r.Get("/login", webHandler.Login)
 	r.Post("/sign-in", webHandler.SignIn)
+	r.Get("/sign-out", webHandler.SignOut)
 	r.Get("/register", webHandler.Register)
 	r.Post("/sign-up", webHandler.SignUp)
 	r.Get("/forgot-password", webHandler.ForgotPassword)
