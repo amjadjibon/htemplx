@@ -3,22 +3,41 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/gorilla/sessions"
+
 	"htemplx/app/domain"
 	"htemplx/app/views/components"
 	"htemplx/app/views/pages"
 )
 
 type WebHandler struct {
-	usersDomain *domain.UsersDomain
+	usersDomain  *domain.UsersDomain
+	sessionStore sessions.Store
 }
 
-func NewWebHandler(usersDomain *domain.UsersDomain) WebHandler {
-	return WebHandler{usersDomain: usersDomain}
+func NewWebHandler(usersDomain *domain.UsersDomain, sessionStore sessions.Store) WebHandler {
+	return WebHandler{usersDomain: usersDomain, sessionStore: sessionStore}
 }
 
 // Index renders the index page
 func (h *WebHandler) Index(w http.ResponseWriter, r *http.Request) {
-	render(w, r, pages.Index("htemplx"))
+	loggedIn := true
+	session, err := h.sessionStore.Get(r, "auth")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusForbidden)
+		return
+	}
+
+	authenticated, ok := session.Values["authenticated"].(bool)
+	if !ok {
+		loggedIn = false
+	}
+
+	if !authenticated {
+		loggedIn = false
+	}
+
+	render(w, r, pages.Index(loggedIn, "htemplx"))
 }
 
 // About renders the about page
@@ -54,6 +73,18 @@ func (h *WebHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	session, err := h.sessionStore.New(r, "auth")
+	if err != nil {
+		return
+	}
+
+	session.Values["authenticated"] = true
+	err = session.Save(r, w)
+	if err != nil {
+		return
+	}
+
 	render(w, r, components.PasteBin())
 }
 

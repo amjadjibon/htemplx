@@ -1,15 +1,19 @@
 package pages
 
 import (
-	"htemplx/app/views/components"
-	"htemplx/app/views/layouts"
+    "htemplx/app/views/components"
+    "htemplx/app/views/layouts"
 )
 
-templ Index(title string) {
-	@layouts.Base(title) {
+templ Index(loggedIn bool, title string) {
+    @layouts.Base(title) {
         @components.Navbar()
-        @components.Login()
+        if loggedIn {
+            @components.PasteBin()
+        } else {
+            @components.Login()
+        }
         @components.NewsLetter()
         @components.Footer()
-	}
+    }
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"time"
@@ -8,6 +9,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/rbcervilla/redisstore/v9"
+	"github.com/redis/go-redis/v9"
 	httpSwagger "github.com/swaggo/http-swagger/v2"
 
 	_ "htemplx/app/docs"
@@ -56,7 +59,26 @@ func setupRouter() http.Handler {
 	usersRepo := repo.NewUsersRepo(nDBX)
 	usersDomain := domain.NewUsersDomain(usersRepo)
 
-	webHandler := handlers.NewWebHandler(usersDomain)
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "rootpassword",
+	})
+
+	// New default RedisStore
+	store, err := redisstore.NewRedisStore(context.Background(), client)
+	if err != nil {
+		panic(err)
+	}
+
+	// Example changing configuration for sessions
+	store.KeyPrefix("session_")
+	// store.Options(sessions.Options{
+	// 	Path:   "/path",
+	// 	Domain: "example.com",
+	// 	MaxAge: 86400 * 60,
+	// })
+
+	webHandler := handlers.NewWebHandler(usersDomain, store)
 	r.Get("/", webHandler.Index)
 	r.Get("/services", webHandler.Services)
 	r.Get("/about", webHandler.About)
