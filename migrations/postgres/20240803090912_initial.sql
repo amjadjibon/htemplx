@@ -19,7 +19,17 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
 CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
 
+CREATE TABLE contact_us (
+    id serial PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+
 -- +goose Down
 DROP INDEX IF EXISTS idx_users_username;
 DROP INDEX IF EXISTS idx_users_email;
 DROP TABLE IF EXISTS users;
+
+DROP TABLE IF EXISTS contact_us;

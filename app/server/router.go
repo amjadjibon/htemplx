@@ -59,6 +59,9 @@ func setupRouter() http.Handler {
 	usersRepo := repo.NewUsersRepo(nDBX)
 	usersDomain := domain.NewUsersDomain(usersRepo)
 
+	contactsRepo := repo.NewContactsRepo(nDBX)
+	contactsDomain := domain.NewContactsDomain(contactsRepo)
+
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "rootpassword",
@@ -78,11 +81,12 @@ func setupRouter() http.Handler {
 	// 	MaxAge: 86400 * 60,
 	// })
 
-	webHandler := handlers.NewWebHandler(usersDomain, store)
+	webHandler := handlers.NewWebHandler(usersDomain, contactsDomain, store)
 	r.Get("/", webHandler.Index)
 	r.Get("/services", webHandler.Services)
 	r.Get("/about", webHandler.About)
 	r.Get("/contact", webHandler.Contact)
+	r.Post("/contact-submit", webHandler.ContactSubmit)
 	r.Get("/login", webHandler.Login)
 	r.Post("/sign-in", webHandler.SignIn)
 	r.Get("/sign-out", webHandler.SignOut)

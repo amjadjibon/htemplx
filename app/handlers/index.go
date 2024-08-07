@@ -11,12 +11,21 @@ import (
 )
 
 type WebHandler struct {
-	usersDomain  *domain.UsersDomain
-	sessionStore sessions.Store
+	usersDomain    *domain.UsersDomain
+	contactsDomain *domain.ContactsDomain
+	sessionStore   sessions.Store
 }
 
-func NewWebHandler(usersDomain *domain.UsersDomain, sessionStore sessions.Store) WebHandler {
-	return WebHandler{usersDomain: usersDomain, sessionStore: sessionStore}
+func NewWebHandler(
+	usersDomain *domain.UsersDomain,
+	contactsDomain *domain.ContactsDomain,
+	sessionStore sessions.Store,
+) WebHandler {
+	return WebHandler{
+		usersDomain:    usersDomain,
+		contactsDomain: contactsDomain,
+		sessionStore:   sessionStore,
+	}
 }
 
 // Index renders the index page
@@ -50,6 +59,17 @@ func (h *WebHandler) Contact(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render(w, r, pages.Contact(loggedIn, "htemplx"))
+}
+
+// ContactSubmit renders the contact page
+func (h *WebHandler) ContactSubmit(w http.ResponseWriter, r *http.Request) {
+	err := h.contactsDomain.CreateContacts(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	render(w, r, components.Alert())
 }
 
 // NotFound renders the 404 not found page
