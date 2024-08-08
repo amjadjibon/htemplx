@@ -24,3 +24,8 @@ templ NavPasteBin(loggedIn bool) {
     @components.Navbar(loggedIn)
     @components.PasteBin()
 }
+
+templ NavLogin() {
+    @components.Navbar(false)
+    @components.Login()
+}

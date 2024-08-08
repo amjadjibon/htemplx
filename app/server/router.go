@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -50,7 +51,7 @@ func setupRouter() http.Handler {
 	r.Get("/healthz", handlers.Healthz)
 
 	nDBX := dbx.NewDBX(
-		"postgres://rootuser:rootpassword@localhost:5432/htemplx_db?sslmode=disable",
+		os.Getenv("DB_URL"),
 		5,
 		10,
 		20*time.Minute,
@@ -63,7 +64,7 @@ func setupRouter() http.Handler {
 	contactsDomain := domain.NewContactsDomain(contactsRepo)
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv("REDIS_URL"),
 		Password: "rootpassword",
 	})
 

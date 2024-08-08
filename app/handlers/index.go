@@ -69,7 +69,7 @@ func (h *WebHandler) ContactSubmit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render(w, r, components.Alert())
+	render(w, r, components.Alert("Success!", "Thanks for sending feedback."))
 }
 
 // NotFound renders the 404 not found page
@@ -98,7 +98,8 @@ func (h *WebHandler) Login(w http.ResponseWriter, r *http.Request) {
 func (h *WebHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 	_, err := h.usersDomain.Login(r)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
+		render(w, r, components.Alert("Failed!", err.Error()))
 		return
 	}
 
