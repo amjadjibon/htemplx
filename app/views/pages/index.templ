@@ -15,6 +15,9 @@ templ Index(loggedIn bool, title string) {
                 @components.Login()
             }
         </div>
+        @components.Table()
+        @components.Pagination()
+
         @components.NewsLetter()
         @components.Footer()
     }
