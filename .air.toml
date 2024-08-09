@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
   args_bin = ["serve"]
   bin = "./tmp/main"
-  cmd = "swag fmt && swag init --output app/docs && templ generate && npx tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css && go build -o ./tmp/main ."
+  cmd = "swag fmt && swag init --output ./app/docs templ generate && npx tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css && go build -o ./tmp/main main.go"
   delay = 1000
   exclude_dir = ["tmp", "vendor", "testdata", "docs", "app/docs"]
   exclude_file = []

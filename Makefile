@@ -1,5 +1,3 @@
-include: ./scripts/makefiles/docker.mk
-
 # Your Makefile rules
 all:
 	@echo "This is the main Makefile."
@@ -34,21 +32,18 @@ run:
 tailwind-gen:
 	npx tailwindcss -i ./public/assets/css/input.css -o ./public/assets/css/output.css
 
-# Environment Variables
-export POSTGRES_USER=postgres
-export POSTGRES_PASSWORD=postgres
-export POSTGRES_DB=htemplx
-
 # Docker Compose File
-COMPOSE_FILE=docker-compose.yml
-
-# Database URL
-export DB_URL=postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgres:5432/$(POSTGRES_DB)?sslmode=disable
+COMPOSE_FILE=distribution/compose/docker-compose.yml
+COMPOSE_FILE_DEV=distribution/compose/docker-compose-dev.yml
 
 # Build the Go binary and Docker image
 docker-build:
-	docker build -t htemplx .
+	docker build -f ./distribution/docker/Dockerfile -t htemplx .
 
 # Start the services
 docker-up:
 	docker-compose -f $(COMPOSE_FILE) up
+
+# Start the services
+docker-up-dev:
+	docker-compose -f $(COMPOSE_FILE_DEV) up

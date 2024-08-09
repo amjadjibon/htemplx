@@ -13,8 +13,10 @@ RUN make build
 FROM scratch
 
 WORKDIR /app
-COPY --from=builder /app/bin/htemplx /app/bin/htemplx
+COPY --from=builder /app/bin/htemplx /usr/local/bin/htemplx
 
 EXPOSE 8080
 
-CMD ["/app/bin/htemplx"]
+ENTRYPOINT ["/usr/local/bin/htemplx"]
+
+CMD [ "serve" ]
