@@ -18,6 +18,7 @@ import (
 	"htemplx/app/domain"
 	"htemplx/app/handlers"
 	"htemplx/app/repo"
+	"htemplx/pkg/auth"
 	"htemplx/pkg/dbx"
 	"htemplx/pkg/middlewares"
 	"htemplx/public"
@@ -82,6 +83,8 @@ func setupRouter() http.Handler {
 	// 	MaxAge: 86400 * 60,
 	// })
 
+	auth.SetupGoth(store)
+
 	webHandler := handlers.NewWebHandler(usersDomain, contactsDomain, store)
 	r.Get("/", webHandler.Index)
 	r.Get("/services", webHandler.Services)
@@ -98,6 +101,9 @@ func setupRouter() http.Handler {
 	r.Get("/under-construction", webHandler.UnderConstruction)
 	r.Get("/terms-and-conditions", webHandler.TermsAndConditions)
 	r.Get("/privacy-policy", webHandler.Privacy)
+
+	r.Get("/auth/{provider}", webHandler.GothLogin)
+	r.Get("/auth/{provider}/callback", webHandler.GothLogin)
 
 	// default not found page
 	r.NotFound(webHandler.NotFound)

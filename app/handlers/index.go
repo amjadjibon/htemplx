@@ -1,13 +1,16 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 
 	"htemplx/app/domain"
 	"htemplx/app/views/components"
 	"htemplx/app/views/pages"
+	"htemplx/pkg/auth"
 )
 
 type WebHandler struct {
@@ -201,4 +204,27 @@ func (h *WebHandler) IsLoggedIn(r *http.Request) (bool, error) {
 	}
 
 	return loggedIn, nil
+}
+
+// GothLogin renders the privacy policy page
+func (h *WebHandler) GothLogin(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	q.Add("provider", chi.URLParam(r, "provider"))
+	r.URL.RawQuery = q.Encode()
+	login, err := auth.GothicLogin(w, r)
+	if err != nil {
+		auth.GothicBeginAuthHandler(w, r)
+	}
+
+	fmt.Println(login)
+}
+
+// GothCallback renders the privacy policy page
+func (h *WebHandler) GothCallback(w http.ResponseWriter, r *http.Request) {
+	login, err := auth.GothicLogin(w, r)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(login)
 }
