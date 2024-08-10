@@ -10,6 +10,7 @@ import (
 
 const ContactUsTable = "contact_us"
 
+//go:generate go run github.com/princjef/gomarkdoc/cmd/gomarkdoc --output cantacts.md .
 type ContactsRepo struct {
 	dbx *dbx.DBX
 }

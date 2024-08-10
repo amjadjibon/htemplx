@@ -7,6 +7,7 @@ import (
 	"htemplx/pkg/dbx"
 )
 
+//go:generate go run github.com/princjef/gomarkdoc/cmd/gomarkdoc --output users.md .
 type UsersRepo struct {
 	dbx *dbx.DBX
 }
