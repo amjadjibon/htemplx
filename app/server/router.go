@@ -103,7 +103,7 @@ func setupRouter() http.Handler {
 	r.Get("/privacy-policy", webHandler.Privacy)
 
 	r.Get("/auth/{provider}", webHandler.GothLogin)
-	r.Get("/auth/{provider}/callback", webHandler.GothLogin)
+	r.Get("/auth/{provider}/callback", webHandler.GothCallback)
 
 	// default not found page
 	r.NotFound(webHandler.NotFound)
