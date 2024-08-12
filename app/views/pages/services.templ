@@ -8,6 +8,7 @@ import (
 templ Services(loggedIn bool, title string) {
 	@layouts.Base(title) {
 		@components.Navbar(loggedIn)
+		@components.Sidebar()
         @components.UnderConstruction()
         @components.NewsLetter()
         @components.Footer()

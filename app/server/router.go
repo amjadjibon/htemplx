@@ -87,7 +87,7 @@ func setupRouter() http.Handler {
 
 	webHandler := handlers.NewWebHandler(usersDomain, contactsDomain, store)
 	r.Get("/", webHandler.Index)
-	r.Get("/services", webHandler.Services)
+	r.Get("/components", webHandler.Services)
 	r.Get("/about", webHandler.About)
 	r.Get("/contact", webHandler.Contact)
 	r.Post("/contact-submit", webHandler.ContactSubmit)
