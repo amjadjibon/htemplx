@@ -181,7 +181,7 @@ func (h *WebHandler) ForgotPasswordSubmit(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	render(w, r, components.Login())
 }
 
 // UnderConstruction renders the under construction page
