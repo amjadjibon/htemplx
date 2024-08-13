@@ -31,7 +31,6 @@ func NewMailer(
 		gomail.WithSMTPAuth(gomail.SMTPAuthPlain),
 		gomail.WithUsername(username),
 		gomail.WithPassword(password),
-		gomail.WithDebugLog(),
 	)
 
 	if err != nil {

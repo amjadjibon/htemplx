@@ -11,11 +11,12 @@ build:
 serve: build
 	./bin/htemplx serve
 
+DB_URL=postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
 migrate-up:
-	go run main.go migrate up --db_url=postgres://rootuser:rootpassword@localhost:5432/htemplx_db?sslmode=disable
+	go run main.go migrate up --db_url=${DB_URL}
 
 migrate-down:
-	go run main.go migrate down --db_url=postgres://rootuser:rootpassword@localhost:5432/htemplx_db?sslmode=disable
+	go run main.go migrate down --db_url=${DB_URL}
 
 templ-install:
 	go install github.com/a-h/templ/cmd/templ@latest

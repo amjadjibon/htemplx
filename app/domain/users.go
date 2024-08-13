@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -13,15 +14,20 @@ import (
 	"htemplx/app/dto"
 	"htemplx/app/models"
 	"htemplx/app/repo"
-	"htemplx/pkg/passoword"
+	"htemplx/pkg/auth"
+	"htemplx/pkg/mailer"
 )
 
 type UsersDomain struct {
 	usersRepo *repo.UsersRepo
+	mailer    *mailer.Mailer
 }
 
-func NewUsersDomain(usersRepo *repo.UsersRepo) *UsersDomain {
-	return &UsersDomain{usersRepo: usersRepo}
+func NewUsersDomain(
+	usersRepo *repo.UsersRepo,
+	mailer *mailer.Mailer,
+) *UsersDomain {
+	return &UsersDomain{usersRepo: usersRepo, mailer: mailer}
 }
 
 // CreateUsers processes the user creation request
@@ -55,7 +61,7 @@ func (u *UsersDomain) CreateUsers(r *http.Request) (*dto.CreateUserResponse, err
 		return nil, errors.New("missing required fields")
 	}
 
-	hashedPassword, err := passoword.HashPassword(req.Password)
+	hashedPassword, err := auth.HashPassword(req.Password)
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +208,7 @@ func (u *UsersDomain) Login(r *http.Request) (*dto.UserResponse, error) {
 	}
 
 	// Validate password
-	if !passoword.CheckPassword(pass, user.Password) {
+	if !auth.CheckPassword(pass, user.Password) {
 		return nil, errors.New("password incorrect")
 	}
 
@@ -214,4 +220,42 @@ func (u *UsersDomain) Login(r *http.Request) (*dto.UserResponse, error) {
 		Username:  user.Username,
 		Email:     user.Email,
 	}, nil
+}
+
+func (u *UsersDomain) ForgotPassword(r *http.Request) error {
+	// Parse form data
+	if err := r.ParseForm(); err != nil {
+		return err
+	}
+
+	// Extract form values
+	email := r.FormValue("email")
+
+	if email == "" {
+		return errors.New("missing required fields")
+	}
+
+	// Get user by email
+	user, err := u.usersRepo.GetUserByEmail(r.Context(), email)
+	if err != nil {
+		return err
+	}
+
+	rawPassword := auth.GenerateRandomPassword()
+	user.Password, _ = auth.HashPassword(rawPassword)
+
+	err = u.usersRepo.UpdateUser(r.Context(), user)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		err = u.mailer.SendEmail(user.Email, "password", rawPassword)
+		if err != nil {
+			slog.ErrorContext(r.Context(), "failed to send email", "error", err)
+		}
+	}()
+
+	slog.InfoContext(r.Context(), "password reset successful")
+	return nil
 }

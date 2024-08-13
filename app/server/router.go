@@ -20,6 +20,7 @@ import (
 	"htemplx/app/repo"
 	"htemplx/pkg/auth"
 	"htemplx/pkg/dbx"
+	"htemplx/pkg/mailer"
 	"htemplx/pkg/middlewares"
 	"htemplx/public"
 )
@@ -59,7 +60,19 @@ func setupRouter() http.Handler {
 		30*time.Minute,
 	)
 	usersRepo := repo.NewUsersRepo(nDBX)
-	usersDomain := domain.NewUsersDomain(usersRepo)
+	newMailer, err := mailer.NewMailer(
+		os.Getenv("SMTP_HOST"),
+		587,
+		os.Getenv("SMTP_FROM"),
+		os.Getenv("SMTP_FROM"),
+		os.Getenv("SMTP_PASSWORD"),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	usersDomain := domain.NewUsersDomain(usersRepo, newMailer)
 
 	contactsRepo := repo.NewContactsRepo(nDBX)
 	contactsDomain := domain.NewContactsDomain(contactsRepo)
@@ -97,6 +110,7 @@ func setupRouter() http.Handler {
 	r.Get("/register", webHandler.Register)
 	r.Post("/sign-up", webHandler.SignUp)
 	r.Get("/forgot-password", webHandler.ForgotPassword)
+	r.Get("/forgot-password-submit", webHandler.ForgotPasswordSubmit)
 	r.Get("/under-construction", webHandler.UnderConstruction)
 	r.Get("/under-construction", webHandler.UnderConstruction)
 	r.Get("/terms-and-conditions", webHandler.TermsAndConditions)

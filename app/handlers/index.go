@@ -130,11 +130,12 @@ func (h *WebHandler) SignIn(w http.ResponseWriter, r *http.Request) {
 
 // SignOut renders the pastebin page (adjust the name if needed)
 func (h *WebHandler) SignOut(w http.ResponseWriter, r *http.Request) {
-	err := auth.GothicLogout(w, r)
-	if err == nil {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
+	// todo: implement logout from google
+	// err := auth.GothicLogout(w, r)
+	// if err == nil {
+	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// 	return
+	// }
 
 	session, err := h.sessionStore.New(r, "auth")
 	if err != nil {
@@ -170,6 +171,17 @@ func (h *WebHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 // ForgotPassword renders the forgot password page
 func (h *WebHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	render(w, r, components.ForgotPassword())
+}
+
+// ForgotPasswordSubmit renders the forgot password page
+func (h *WebHandler) ForgotPasswordSubmit(w http.ResponseWriter, r *http.Request) {
+	err := h.usersDomain.ForgotPassword(r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 // UnderConstruction renders the under construction page
