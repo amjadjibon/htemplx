@@ -2,11 +2,14 @@ package server
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
+	"github.com/getsentry/sentry-go"
+	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -41,6 +44,26 @@ func setupRouter() http.Handler {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+
+	// To initialize Sentry's handler, you need to initialize Sentry itself beforehand
+	if err := sentry.Init(sentry.ClientOptions{
+		Dsn:           os.Getenv("SENTRY_DSN"),
+		EnableTracing: true,
+		// Set TracesSampleRate to 1.0 to capture 100%
+		// of transactions for tracing.
+		// We recommend adjusting this value in production,
+		TracesSampleRate: 1.0,
+	}); err != nil {
+		slog.Warn("failed to initialize sentry", "err", err)
+	}
+
+	defer sentry.Flush(time.Minute)
+
+	sentryMiddleware := sentryhttp.New(sentryhttp.Options{
+		Repanic: true,
+	})
+
+	r.Use(sentryMiddleware.Handle)
 
 	r.Get("/swagger/*", httpSwagger.Handler(
 		httpSwagger.URL("/swagger/doc.json"), // The url pointing to API definition
@@ -78,8 +101,7 @@ func setupRouter() http.Handler {
 	contactsDomain := domain.NewContactsDomain(contactsRepo)
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     os.Getenv("REDIS_URL"),
-		Password: "rootpassword",
+		Addr: os.Getenv("REDIS_URL"),
 	})
 
 	// New default RedisStore
