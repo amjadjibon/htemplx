@@ -8,7 +8,7 @@ import (
 templ Index(loggedIn bool, title string) {
     @layouts.Base(title) {
         <div id="nav-login">
-            @components.Navbar(loggedIn)
+            @components.Navbar(false, loggedIn)
             if loggedIn {
                 @components.PasteBin()
             } else {
@@ -22,11 +22,11 @@ templ Index(loggedIn bool, title string) {
 }
 
 templ NavPasteBin(loggedIn bool) {
-    @components.Navbar(loggedIn)
+    @components.Navbar(false, loggedIn)
     @components.PasteBin()
 }
 
 templ NavLogin() {
-    @components.Navbar(false)
+    @components.Navbar(false, false)
     @components.Login()
 }

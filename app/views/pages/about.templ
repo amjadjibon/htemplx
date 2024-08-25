@@ -7,7 +7,7 @@ import (
 
 templ About(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar(loggedIn)
+		@components.Navbar(false, loggedIn)
         @components.About()
         @components.Footer()
 	}

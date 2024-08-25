@@ -47,7 +47,7 @@ func Index(loggedIn bool, title string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Navbar(false, loggedIn).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -114,7 +114,7 @@ func NavPasteBin(loggedIn bool) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = components.Navbar(loggedIn).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Navbar(false, loggedIn).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -144,7 +144,7 @@ func NavLogin() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = components.Navbar(false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Navbar(false, false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

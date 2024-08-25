@@ -7,7 +7,7 @@ import (
 
 templ Terms(loggedIn bool, title string) {
 	@layouts.Base(title) {
-		@components.Navbar(loggedIn)
+		@components.Navbar(false, loggedIn)
         <div class="pt-20">
             @components.UnderConstruction()
         </div>
