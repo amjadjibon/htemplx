@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: htemplx
+  name: htemplx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: htemplx
+  template:
+    metadata:
+      labels:
+        app: htemplx
+    spec:
+      containers:
+        - image: amjadjibon/htemplx
+          name: htemplx
+          ports:
+            - containerPort: 80
+              name: htemplx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: htemplx
+  name: htemplx
+spec:
+  type: NodePort
+  ports:
+    - name: htemplx
+      port: 8080
+      targetPort: 8080
+      nodePort: 31000
+  selector:
+    app: htemplx
+---
