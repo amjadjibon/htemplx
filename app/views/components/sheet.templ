@@ -1,0 +1,76 @@
+package components
+
+// Sheet renders a slide-out panel (similar to Dialog but slides from side)
+templ Sheet(id string, title string, description string, content templ.Component, side string) {
+	<div id={ id } class="relative z-50" role="dialog" aria-modal="true">
+		<!-- Backdrop -->
+		<div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" _={ "on click hide #" + id + " then remove #" + id }></div>
+
+		<!-- Sheet panel -->
+		<div class="fixed inset-y-0 flex" class={ getSheetPositionClasses(side) }>
+			<div class={ getSheetPanelClasses(side) }>
+				<!-- Header -->
+				<div class="flex items-start justify-between border-b border-slate-200 p-6 dark:border-slate-800">
+					<div class="flex-1">
+						<h2 class="text-lg font-semibold text-slate-900 dark:text-slate-50">
+							{ title }
+						</h2>
+						if description != "" {
+							<p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
+								{ description }
+							</p>
+						}
+					</div>
+					<button
+						type="button"
+						class="rounded-md text-slate-400 hover:text-slate-500 focus:outline-none dark:hover:text-slate-300"
+						_={ "on click hide #" + id + " then remove #" + id }
+					>
+						<span class="sr-only">Close</span>
+						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+					</button>
+				</div>
+
+				<!-- Content -->
+				<div class="flex-1 overflow-y-auto p-6">
+					@content
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+// SheetSimple renders a simple sheet without description
+templ SheetSimple(id string, title string, content templ.Component, side string) {
+	@Sheet(id, title, "", content, side)
+}
+
+func getSheetPositionClasses(side string) string {
+	switch side {
+	case "left":
+		return "left-0"
+	case "right":
+		return "right-0"
+	case "top":
+		return "top-0 w-full justify-center"
+	case "bottom":
+		return "bottom-0 w-full justify-center"
+	default:
+		return "right-0"
+	}
+}
+
+func getSheetPanelClasses(side string) string {
+	baseClasses := "relative flex flex-col bg-white shadow-xl dark:bg-slate-950"
+
+	switch side {
+	case "left", "right":
+		return baseClasses + " h-full w-full max-w-md"
+	case "top", "bottom":
+		return baseClasses + " w-full max-h-[85vh]"
+	default:
+		return baseClasses + " h-full w-full max-w-md"
+	}
+}

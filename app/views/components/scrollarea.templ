@@ -1,0 +1,46 @@
+package components
+
+// ScrollArea renders a custom scrollable area
+templ ScrollArea(height string, children ...templ.Component) {
+	<div class="relative overflow-hidden">
+		<div class="overflow-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 dark:scrollbar-thumb-slate-700 dark:scrollbar-track-slate-900" style={ "height: " + height }>
+			for _, child := range children {
+				@child
+			}
+		</div>
+		<style>
+			/* Custom scrollbar styles */
+			.scrollbar-thin::-webkit-scrollbar {
+				width: 8px;
+				height: 8px;
+			}
+			.scrollbar-thumb-slate-300::-webkit-scrollbar-thumb {
+				background-color: #cbd5e1;
+				border-radius: 4px;
+			}
+			.scrollbar-track-slate-100::-webkit-scrollbar-track {
+				background-color: #f1f5f9;
+			}
+			.dark .scrollbar-thumb-slate-700::-webkit-scrollbar-thumb {
+				background-color: #334155;
+			}
+			.dark .scrollbar-track-slate-900::-webkit-scrollbar-track {
+				background-color: #0f172a;
+			}
+			.scrollbar-thin {
+				scrollbar-width: thin;
+			}
+		</style>
+	</div>
+}
+
+// ScrollAreaHorizontal renders a horizontal scrollable area
+templ ScrollAreaHorizontal(children ...templ.Component) {
+	<div class="relative overflow-hidden">
+		<div class="overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-100 dark:scrollbar-thumb-slate-700 dark:scrollbar-track-slate-900">
+			for _, child := range children {
+				@child
+			}
+		</div>
+	</div>
+}

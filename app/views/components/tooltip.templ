@@ -1,0 +1,69 @@
+package components
+
+// Tooltip renders a tooltip that appears on hover
+templ Tooltip(content string, trigger templ.Component, position string) {
+	<div class="relative inline-block group">
+		@trigger
+		<div
+			class={ getTooltipClasses(position) }
+			role="tooltip"
+		>
+			{ content }
+			<div class={ getTooltipArrowClasses(position) }></div>
+		</div>
+	</div>
+}
+
+// TooltipSimple renders a simple tooltip around text
+templ TooltipSimple(content string, text string, position string) {
+	<div class="relative inline-block group">
+		<span class="cursor-help border-b border-dotted border-slate-400">{ text }</span>
+		<div
+			class={ getTooltipClasses(position) }
+			role="tooltip"
+		>
+			{ content }
+			<div class={ getTooltipArrowClasses(position) }></div>
+		</div>
+	</div>
+}
+
+func getTooltipClasses(position string) string {
+	baseClasses := "pointer-events-none absolute z-50 overflow-hidden rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm text-slate-950 shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50 whitespace-nowrap"
+
+	var positionClasses string
+	switch position {
+	case "top":
+		positionClasses = "bottom-full left-1/2 -translate-x-1/2 mb-2"
+	case "bottom":
+		positionClasses = "top-full left-1/2 -translate-x-1/2 mt-2"
+	case "left":
+		positionClasses = "right-full top-1/2 -translate-y-1/2 mr-2"
+	case "right":
+		positionClasses = "left-full top-1/2 -translate-y-1/2 ml-2"
+	default:
+		positionClasses = "bottom-full left-1/2 -translate-x-1/2 mb-2"
+	}
+
+	return baseClasses + " " + positionClasses
+}
+
+func getTooltipArrowClasses(position string) string {
+	baseClasses := "absolute h-2 w-2 rotate-45 bg-white border-slate-200 dark:bg-slate-950 dark:border-slate-800"
+
+	var arrowPositionClasses string
+	switch position {
+	case "top":
+		arrowPositionClasses = "top-full left-1/2 -translate-x-1/2 -mt-1 border-r border-b"
+	case "bottom":
+		arrowPositionClasses = "bottom-full left-1/2 -translate-x-1/2 -mb-1 border-l border-t"
+	case "left":
+		arrowPositionClasses = "left-full top-1/2 -translate-y-1/2 -ml-1 border-t border-r"
+	case "right":
+		arrowPositionClasses = "right-full top-1/2 -translate-y-1/2 -mr-1 border-b border-l"
+	default:
+		arrowPositionClasses = "top-full left-1/2 -translate-x-1/2 -mt-1 border-r border-b"
+	}
+
+	return baseClasses + " " + arrowPositionClasses
+}

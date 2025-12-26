@@ -1,0 +1,122 @@
+package components
+
+// BreadcrumbItem represents a single breadcrumb item
+type BreadcrumbItem struct {
+	Label string
+	Href  string
+}
+
+// Breadcrumb renders a breadcrumb navigation
+templ Breadcrumb(items []BreadcrumbItem) {
+	<nav aria-label="Breadcrumb" class="flex">
+		<ol class="flex items-center space-x-2">
+			for i, item := range items {
+				<li class="flex items-center">
+					if i > 0 {
+						<svg class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+						</svg>
+					}
+					if i == len(items)-1 {
+						<span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400" aria-current="page">
+							{ item.Label }
+						</span>
+					} else {
+						<a
+							href={ templ.URL(item.Href) }
+							class="ml-2 text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+						>
+							{ item.Label }
+						</a>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}
+
+// BreadcrumbWithHome renders a breadcrumb with a home icon
+templ BreadcrumbWithHome(items []BreadcrumbItem, homeHref string) {
+	<nav aria-label="Breadcrumb" class="flex">
+		<ol class="flex items-center space-x-2">
+			<li class="flex items-center">
+				<a href={ templ.URL(homeHref) } class="text-slate-400 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-500">
+					<svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+						<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+					</svg>
+					<span class="sr-only">Home</span>
+				</a>
+			</li>
+			for i, item := range items {
+				<li class="flex items-center">
+					<svg class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+					</svg>
+					if i == len(items)-1 {
+						<span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400" aria-current="page">
+							{ item.Label }
+						</span>
+					} else {
+						<a
+							href={ templ.URL(item.Href) }
+							class="ml-2 text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+						>
+							{ item.Label }
+						</a>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}
+
+// BreadcrumbCollapsed renders a breadcrumb with collapse option for long paths
+templ BreadcrumbCollapsed(items []BreadcrumbItem, maxItems int) {
+	<nav aria-label="Breadcrumb" class="flex">
+		<ol class="flex items-center space-x-2">
+			if len(items) <= maxItems {
+				for i, item := range items {
+					<li class="flex items-center">
+						if i > 0 {
+							<svg class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+							</svg>
+						}
+						if i == len(items)-1 {
+							<span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400" aria-current="page">
+								{ item.Label }
+							</span>
+						} else {
+							<a href={ templ.URL(item.Href) } class="ml-2 text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">
+								{ item.Label }
+							</a>
+						}
+					</li>
+				}
+			} else {
+				// Show first item
+				<li class="flex items-center">
+					<a href={ templ.URL(items[0].Href) } class="text-sm font-medium text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">
+						{ items[0].Label }
+					</a>
+				</li>
+				// Show ellipsis
+				<li class="flex items-center">
+					<svg class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+					</svg>
+					<span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400">...</span>
+				</li>
+				// Show last item
+				<li class="flex items-center">
+					<svg class="h-5 w-5 flex-shrink-0 text-slate-400 dark:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+					</svg>
+					<span class="ml-2 text-sm font-medium text-slate-500 dark:text-slate-400" aria-current="page">
+						{ items[len(items)-1].Label }
+					</span>
+				</li>
+			}
+		</ol>
+	</nav>
+}

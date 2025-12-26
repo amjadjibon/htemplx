@@ -1,0 +1,76 @@
+package components
+
+import "fmt"
+
+// Slider renders a range slider
+templ Slider(name string, min int, max int, value int, step int, attrs ...templ.Attributes) {
+	<div class="relative flex w-full touch-none select-none items-center">
+		<input
+			type="range"
+			name={ name }
+			min={ fmt.Sprintf("%d", min) }
+			max={ fmt.Sprintf("%d", max) }
+			value={ fmt.Sprintf("%d", value) }
+			step={ fmt.Sprintf("%d", step) }
+			class="slider-input h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 dark:bg-slate-800"
+			_={ getSliderScript() }
+			{ attrs... }
+		/>
+		<style>
+			.slider-input::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				appearance: none;
+				height: 1.25rem;
+				width: 1.25rem;
+				border-radius: 9999px;
+				background: #0f172a;
+				cursor: pointer;
+				border: 2px solid white;
+				box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+			}
+			.slider-input::-webkit-slider-thumb:focus {
+				outline: 2px solid #0f172a;
+				outline-offset: 2px;
+			}
+			.slider-input::-moz-range-thumb {
+				height: 1.25rem;
+				width: 1.25rem;
+				border-radius: 9999px;
+				background: #0f172a;
+				cursor: pointer;
+				border: 2px solid white;
+				box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+			}
+			.slider-input::-moz-range-thumb:focus {
+				outline: 2px solid #0f172a;
+				outline-offset: 2px;
+			}
+			.dark .slider-input::-webkit-slider-thumb {
+				background: #f8fafc;
+			}
+			.dark .slider-input::-moz-range-thumb {
+				background: #f8fafc;
+			}
+		</style>
+	</div>
+}
+
+// SliderWithLabel renders a slider with label and value display
+templ SliderWithLabel(name string, label string, min int, max int, value int, step int, attrs ...templ.Attributes) {
+	<div class="space-y-2">
+		<div class="flex items-center justify-between">
+			<label for={ name } class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+				{ label }
+			</label>
+			<span id={ name + "-value" } class="text-sm text-slate-500 dark:text-slate-400">
+				{ fmt.Sprintf("%d", value) }
+			</span>
+		</div>
+		@Slider(name, min, max, value, step, attrs...)
+	</div>
+}
+
+func getSliderScript() string {
+	return `on input
+		set #{ @id + '-value' }'s textContent to my value`
+}

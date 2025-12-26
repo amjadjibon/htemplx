@@ -1,0 +1,75 @@
+package components
+
+// Switch renders a toggle switch
+templ Switch(name string, checked bool, attrs ...templ.Attributes) {
+	<button
+		type="button"
+		role="switch"
+		aria-checked={ getBoolString(checked) }
+		data-state={ getSwitchState(checked) }
+		class="peer inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-slate-900 data-[state=unchecked]:bg-slate-200 dark:focus-visible:ring-slate-300 dark:focus-visible:ring-offset-slate-950 dark:data-[state=checked]:bg-slate-50 dark:data-[state=unchecked]:bg-slate-800"
+		_={ getSwitchScript(name) }
+		{ attrs... }
+	>
+		<span
+			data-state={ getSwitchState(checked) }
+			class="pointer-events-none block h-5 w-5 rounded-full bg-white shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-5 data-[state=unchecked]:translate-x-0 dark:data-[state=checked]:bg-slate-900 dark:data-[state=unchecked]:bg-slate-50"
+		></span>
+	</button>
+	<input type="checkbox" name={ name } checked?={ checked } class="sr-only" { attrs... }/>
+}
+
+// SwitchWithLabel renders a switch with label
+templ SwitchWithLabel(name string, label string, checked bool, attrs ...templ.Attributes) {
+	<div class="flex items-center space-x-2">
+		@Switch(name, checked, attrs...)
+		<label
+			for={ name }
+			class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+		>
+			{ label }
+		</label>
+	</div>
+}
+
+// SwitchWithDescription renders a switch with label and description
+templ SwitchWithDescription(name string, label string, description string, checked bool, attrs ...templ.Attributes) {
+	<div class="flex items-center justify-between space-x-4">
+		<div class="flex-1 space-y-1">
+			<label
+				for={ name }
+				class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+			>
+				{ label }
+			</label>
+			if description != "" {
+				<p class="text-sm text-slate-500 dark:text-slate-400">
+					{ description }
+				</p>
+			}
+		</div>
+		@Switch(name, checked, attrs...)
+	</div>
+}
+
+func getSwitchState(checked bool) string {
+	if checked {
+		return "checked"
+	}
+	return "unchecked"
+}
+
+func getSwitchScript(name string) string {
+	return `on click
+		if @data-state is 'checked'
+			set @data-state to 'unchecked'
+			set @aria-checked to 'false'
+			set @data-state of <span/> in me to 'unchecked'
+			set the checked of next <input[name='` + name + `']/> to false
+		else
+			set @data-state to 'checked'
+			set @aria-checked to 'true'
+			set @data-state of <span/> in me to 'checked'
+			set the checked of next <input[name='` + name + `']/> to true
+		end`
+}

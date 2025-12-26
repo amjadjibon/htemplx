@@ -1,0 +1,105 @@
+package components
+
+import "fmt"
+
+// Progress renders a progress bar
+templ Progress(value int, max int) {
+	<div class="relative h-4 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+		<div
+			class="h-full w-full flex-1 bg-slate-900 transition-all dark:bg-slate-50"
+			style={ fmt.Sprintf("transform: translateX(-%d%%)", 100-getProgressPercent(value, max)) }
+		></div>
+	</div>
+}
+
+// ProgressWithLabel renders a progress bar with percentage label
+templ ProgressWithLabel(value int, max int, label string) {
+	<div class="space-y-2">
+		<div class="flex items-center justify-between">
+			if label != "" {
+				<span class="text-sm font-medium">{ label }</span>
+			}
+			<span class="text-sm text-slate-500 dark:text-slate-400">
+				{ fmt.Sprintf("%d%%", getProgressPercent(value, max)) }
+			</span>
+		</div>
+		@Progress(value, max)
+	</div>
+}
+
+// ProgressIndeterminate renders an indeterminate progress bar
+templ ProgressIndeterminate() {
+	<div class="relative h-4 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+		<div class="h-full w-full animate-progress bg-slate-900 dark:bg-slate-50"></div>
+		<style>
+			@keyframes progress {
+				0% { transform: translateX(-100%); }
+				100% { transform: translateX(100%); }
+			}
+			.animate-progress {
+				animation: progress 1.5s ease-in-out infinite;
+				width: 50%;
+			}
+		</style>
+	</div>
+}
+
+// ProgressCircle renders a circular progress indicator
+templ ProgressCircle(value int, max int, size int) {
+	<div class="relative inline-flex items-center justify-center">
+		<svg class="transform -rotate-90" width={ fmt.Sprintf("%d", size) } height={ fmt.Sprintf("%d", size) }>
+			<circle
+				class="text-slate-200 dark:text-slate-800"
+				stroke-width="4"
+				stroke="currentColor"
+				fill="transparent"
+				r={ fmt.Sprintf("%d", (size-8)/2) }
+				cx={ fmt.Sprintf("%d", size/2) }
+				cy={ fmt.Sprintf("%d", size/2) }
+			></circle>
+			<circle
+				class="text-slate-900 dark:text-slate-50"
+				stroke-width="4"
+				stroke-dasharray={ getCircleDasharray(size) }
+				stroke-dashoffset={ getCircleDashoffset(size, value, max) }
+				stroke-linecap="round"
+				stroke="currentColor"
+				fill="transparent"
+				r={ fmt.Sprintf("%d", (size-8)/2) }
+				cx={ fmt.Sprintf("%d", size/2) }
+				cy={ fmt.Sprintf("%d", size/2) }
+			></circle>
+		</svg>
+		<span class="absolute text-sm font-medium">
+			{ fmt.Sprintf("%d%%", getProgressPercent(value, max)) }
+		</span>
+	</div>
+}
+
+func getProgressPercent(value int, max int) int {
+	if max == 0 {
+		return 0
+	}
+	percent := (value * 100) / max
+	if percent > 100 {
+		return 100
+	}
+	if percent < 0 {
+		return 0
+	}
+	return percent
+}
+
+func getCircleDasharray(size int) string {
+	radius := float64(size-8) / 2.0
+	circumference := 2 * 3.14159 * radius
+	return fmt.Sprintf("%.2f", circumference)
+}
+
+func getCircleDashoffset(size int, value int, max int) string {
+	radius := float64(size-8) / 2.0
+	circumference := 2 * 3.14159 * radius
+	percent := float64(getProgressPercent(value, max)) / 100.0
+	offset := circumference * (1 - percent)
+	return fmt.Sprintf("%.2f", offset)
+}

@@ -1,0 +1,74 @@
+package components
+
+// RadioGroup renders a group of radio buttons
+templ RadioGroup(name string, options []RadioOption, legend string) {
+	<fieldset>
+		if legend != "" {
+			<legend class="mb-3 text-sm font-medium">{ legend }</legend>
+		}
+		<div class="space-y-2">
+			for _, option := range options {
+				@RadioItem(name, option.Value, option.Label, option.Checked, option.Disabled)
+			}
+		</div>
+	</fieldset>
+}
+
+// RadioItem renders a single radio button
+templ RadioItem(name string, value string, label string, checked bool, disabled bool) {
+	<div class="flex items-center space-x-2">
+		<button
+			type="button"
+			role="radio"
+			aria-checked={ getBoolString(checked) }
+			data-state={ getRadioState(checked) }
+			value={ value }
+			disabled?={ disabled }
+			class="aspect-square h-4 w-4 rounded-full border border-slate-200 text-slate-900 ring-offset-white focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:text-slate-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+			_={ getRadioScript(name, value) }
+		>
+			if checked {
+				<span class="flex items-center justify-center">
+					<span class="h-2.5 w-2.5 rounded-full bg-current"></span>
+				</span>
+			}
+		</button>
+		<input type="radio" name={ name } value={ value } checked?={ checked } disabled?={ disabled } class="sr-only"/>
+		<label
+			for={ name + "-" + value }
+			class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+		>
+			{ label }
+		</label>
+	</div>
+}
+
+// RadioOption represents a radio button option
+type RadioOption struct {
+	Value    string
+	Label    string
+	Checked  bool
+	Disabled bool
+}
+
+func getRadioState(checked bool) string {
+	if checked {
+		return "checked"
+	}
+	return "unchecked"
+}
+
+func getRadioScript(name string, value string) string {
+	return `on click
+		-- Uncheck all radios in this group
+		set @data-state of <button[role='radio'][data-state='checked']/> to 'unchecked'
+		set @aria-checked of <button[role='radio'][aria-checked='true']/> to 'false'
+		remove <span/> from <button[role='radio']/>
+		set the checked of <input[type='radio'][name='` + name + `']/> to false
+
+		-- Check this radio
+		set @data-state to 'checked'
+		set @aria-checked to 'true'
+		put '<span class="flex items-center justify-center"><span class="h-2.5 w-2.5 rounded-full bg-current"></span></span>' into me
+		set the checked of next <input[type='radio'][value='` + value + `']/> to true`
+}

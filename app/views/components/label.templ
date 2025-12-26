@@ -1,0 +1,34 @@
+package components
+
+// Label renders a form label
+templ Label(forInput string, text string, required bool) {
+	<label
+		for={ forInput }
+		class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+	>
+		{ text }
+		if required {
+			<span class="text-red-500">*</span>
+		}
+	</label>
+}
+
+// LabelWithDescription renders a label with description
+templ LabelWithDescription(forInput string, text string, description string, required bool) {
+	<div class="space-y-1">
+		<label
+			for={ forInput }
+			class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+		>
+			{ text }
+			if required {
+				<span class="text-red-500">*</span>
+			}
+		</label>
+		if description != "" {
+			<p class="text-sm text-slate-500 dark:text-slate-400">
+				{ description }
+			</p>
+		}
+	</div>
+}

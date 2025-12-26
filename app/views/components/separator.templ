@@ -1,0 +1,24 @@
+package components
+
+// Separator renders a horizontal or vertical separator
+templ Separator(orientation string) {
+	if orientation == "vertical" {
+		<div class="h-full w-px bg-slate-200 dark:bg-slate-800" role="separator" aria-orientation="vertical"></div>
+	} else {
+		<div class="h-px w-full bg-slate-200 dark:bg-slate-800" role="separator" aria-orientation="horizontal"></div>
+	}
+}
+
+// SeparatorWithText renders a separator with text in the middle
+templ SeparatorWithText(text string) {
+	<div class="relative">
+		<div class="absolute inset-0 flex items-center">
+			<div class="w-full border-t border-slate-200 dark:border-slate-800"></div>
+		</div>
+		<div class="relative flex justify-center text-xs uppercase">
+			<span class="bg-white px-2 text-slate-500 dark:bg-slate-950 dark:text-slate-400">
+				{ text }
+			</span>
+		</div>
+	</div>
+}

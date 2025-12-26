@@ -1,0 +1,179 @@
+package components
+
+// Avatar sizes: sm, md, lg, xl
+// Avatar renders an avatar component
+
+templ Avatar(src string, alt string, size string) {
+	<div class={ getAvatarClasses(size) }>
+		if src != "" {
+			<img src={ src } alt={ alt } class="h-full w-full object-cover" />
+		} else {
+			@AvatarFallback(alt, size)
+		}
+	</div>
+}
+
+// AvatarWithFallback renders an avatar with explicit fallback
+templ AvatarWithFallback(src string, alt string, fallback string, size string) {
+	<div class={ getAvatarClasses(size) }>
+		if src != "" {
+			<img
+				src={ src }
+				alt={ alt }
+				class="h-full w-full object-cover"
+				onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+			/>
+		}
+		<div class="hidden h-full w-full items-center justify-center bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50" style={ getDisplayStyle(src) }>
+			<span class={ getFallbackTextSize(size) }>{ fallback }</span>
+		</div>
+	</div>
+}
+
+// AvatarFallback renders avatar fallback (initials)
+templ AvatarFallback(name string, size string) {
+	<div class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-50">
+		<span class={ getFallbackTextSize(size) }>{ getInitials(name) }</span>
+	</div>
+}
+
+// AvatarGroup renders a group of overlapping avatars
+templ AvatarGroup(avatars []AvatarData, max int, size string) {
+	<div class="flex -space-x-2">
+		for i, avatar := range avatars {
+			if i < max {
+				<div class={ getAvatarClasses(size) + " ring-2 ring-white dark:ring-slate-950" }>
+					if avatar.Src != "" {
+						<img src={ avatar.Src } alt={ avatar.Alt } class="h-full w-full object-cover" />
+					} else {
+						@AvatarFallback(avatar.Alt, size)
+					}
+				</div>
+			}
+		}
+		if len(avatars) > max {
+			<div class={ getAvatarClasses(size) + " ring-2 ring-white dark:ring-slate-950 flex items-center justify-center bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400" }>
+				<span class={ getFallbackTextSize(size) }>+{ fmt.Sprintf("%d", len(avatars)-max) }</span>
+			</div>
+		}
+	</div>
+}
+
+// AvatarData represents avatar information
+type AvatarData struct {
+	Src string
+	Alt string
+}
+
+// getAvatarClasses returns the CSS classes for avatar sizes
+func getAvatarClasses(size string) string {
+	baseClasses := "relative flex shrink-0 overflow-hidden rounded-full"
+
+	var sizeClasses string
+	switch size {
+	case "sm":
+		sizeClasses = "h-8 w-8"
+	case "md":
+		sizeClasses = "h-10 w-10"
+	case "lg":
+		sizeClasses = "h-12 w-12"
+	case "xl":
+		sizeClasses = "h-16 w-16"
+	default:
+		sizeClasses = "h-10 w-10"
+	}
+
+	return baseClasses + " " + sizeClasses
+}
+
+// getFallbackTextSize returns text size for fallback based on avatar size
+func getFallbackTextSize(size string) string {
+	switch size {
+	case "sm":
+		return "text-xs font-medium"
+	case "md":
+		return "text-sm font-medium"
+	case "lg":
+		return "text-base font-medium"
+	case "xl":
+		return "text-xl font-medium"
+	default:
+		return "text-sm font-medium"
+	}
+}
+
+// getInitials extracts initials from a name
+func getInitials(name string) string {
+	if name == "" {
+		return "?"
+	}
+
+	words := splitString(name, " ")
+	if len(words) == 0 {
+		return "?"
+	}
+
+	if len(words) == 1 {
+		if len(words[0]) > 0 {
+			return toUpper(string(words[0][0]))
+		}
+		return "?"
+	}
+
+	first := ""
+	last := ""
+	if len(words[0]) > 0 {
+		first = toUpper(string(words[0][0]))
+	}
+	if len(words[len(words)-1]) > 0 {
+		last = toUpper(string(words[len(words)-1][0]))
+	}
+
+	return first + last
+}
+
+// Helper functions
+func splitString(s string, sep string) []string {
+	if s == "" {
+		return []string{}
+	}
+
+	var result []string
+	current := ""
+
+	for _, char := range s {
+		if string(char) == sep {
+			if current != "" {
+				result = append(result, current)
+				current = ""
+			}
+		} else {
+			current += string(char)
+		}
+	}
+
+	if current != "" {
+		result = append(result, current)
+	}
+
+	return result
+}
+
+func toUpper(s string) string {
+	if s == "" {
+		return s
+	}
+
+	c := s[0]
+	if c >= 'a' && c <= 'z' {
+		return string(c - 32)
+	}
+	return string(c)
+}
+
+func getDisplayStyle(src string) string {
+	if src == "" {
+		return "display: flex"
+	}
+	return "display: none"
+}

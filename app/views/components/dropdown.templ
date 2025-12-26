@@ -1,0 +1,92 @@
+package components
+
+// DropdownMenu renders a dropdown menu
+templ DropdownMenu(id string, trigger templ.Component, items []DropdownItem) {
+	<div class="relative inline-block text-left">
+		<div _={ "on click toggle .hidden on #" + id }>
+			@trigger
+		</div>
+		<div
+			id={ id }
+			class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md border border-slate-200 bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:border-slate-800 dark:bg-slate-950 hidden"
+			_="on click outside hide me"
+			role="menu"
+		>
+			for _, item := range items {
+				if item.Separator {
+					<div class="my-1 h-px bg-slate-100 dark:bg-slate-800" role="separator"></div>
+				} else if item.Label != "" {
+					<div class="px-2 py-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
+						{ item.Label }
+					</div>
+				} else {
+					@DropdownMenuItem(item)
+				}
+			}
+		</div>
+	</div>
+}
+
+// DropdownMenuItem renders a single dropdown menu item
+templ DropdownMenuItem(item DropdownItem) {
+	if item.Href != "" {
+		<a
+			href={ templ.URL(item.Href) }
+			class="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-slate-800 dark:hover:text-slate-50 dark:focus:bg-slate-800 dark:focus:text-slate-50"
+			role="menuitem"
+			data-disabled={ getBoolAttribute(item.Disabled) }
+		>
+			if item.Icon != nil {
+				<span class="mr-2 h-4 w-4">
+					@item.Icon
+				</span>
+			}
+			<span>{ item.Text }</span>
+			if item.Shortcut != "" {
+				<span class="ml-auto text-xs tracking-widest text-slate-500 dark:text-slate-400">
+					{ item.Shortcut }
+				</span>
+			}
+		</a>
+	} else {
+		<button
+			type="button"
+			class="relative flex w-full cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:hover:bg-slate-800 dark:hover:text-slate-50 dark:focus:bg-slate-800 dark:focus:text-slate-50"
+			role="menuitem"
+			data-disabled={ getBoolAttribute(item.Disabled) }
+			hx-post={ item.Action }
+			hx-swap="outerHTML"
+		>
+			if item.Icon != nil {
+				<span class="mr-2 h-4 w-4">
+					@item.Icon
+				</span>
+			}
+			<span>{ item.Text }</span>
+			if item.Shortcut != "" {
+				<span class="ml-auto text-xs tracking-widest text-slate-500 dark:text-slate-400">
+					{ item.Shortcut }
+				</span>
+			}
+		</button>
+	}
+}
+
+// DropdownItem represents a dropdown menu item
+type DropdownItem struct {
+	Text      string
+	Href      string
+	Action    string
+	Icon      templ.Component
+	Shortcut  string
+	Disabled  bool
+	Separator bool
+	Label     string
+}
+
+func getBoolAttribute(b bool) string {
+	if b {
+		return "true"
+	}
+	return ""
+}

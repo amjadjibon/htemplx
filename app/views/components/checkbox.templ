@@ -1,0 +1,86 @@
+package components
+
+// Checkbox renders a checkbox input
+templ Checkbox(name string, value string, checked bool, attrs ...templ.Attributes) {
+	<button
+		type="button"
+		role="checkbox"
+		aria-checked={ getBoolString(checked) }
+		data-state={ getCheckboxState(checked) }
+		value={ value }
+		class="peer h-4 w-4 shrink-0 rounded-sm border border-slate-200 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-slate-900 data-[state=checked]:text-slate-50 dark:border-slate-800 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300 dark:data-[state=checked]:bg-slate-50 dark:data-[state=checked]:text-slate-900"
+		_={ getCheckboxScript(name) }
+		{ attrs... }
+	>
+		if checked {
+			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+				<polyline points="20 6 9 17 4 12"></polyline>
+			</svg>
+		}
+	</button>
+	<input type="checkbox" name={ name } value={ value } checked?={ checked } class="sr-only" { attrs... }/>
+}
+
+// CheckboxWithLabel renders a checkbox with label
+templ CheckboxWithLabel(name string, value string, label string, checked bool, attrs ...templ.Attributes) {
+	<div class="flex items-center space-x-2">
+		@Checkbox(name, value, checked, attrs...)
+		<label
+			for={ name }
+			class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+		>
+			{ label }
+		</label>
+	</div>
+}
+
+// CheckboxGroup renders a group of checkboxes
+templ CheckboxGroup(name string, options []CheckboxOption, legend string) {
+	<fieldset>
+		if legend != "" {
+			<legend class="mb-3 text-sm font-medium">{ legend }</legend>
+		}
+		<div class="space-y-2">
+			for _, option := range options {
+				@CheckboxWithLabel(name, option.Value, option.Label, option.Checked)
+			}
+		</div>
+	</fieldset>
+}
+
+// CheckboxOption represents a checkbox option
+type CheckboxOption struct {
+	Value   string
+	Label   string
+	Checked bool
+}
+
+// Helper functions
+func getBoolString(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
+func getCheckboxState(checked bool) string {
+	if checked {
+		return "checked"
+	}
+	return "unchecked"
+}
+
+func getCheckboxScript(name string) string {
+	return `on click
+		if @data-state is 'checked'
+			set @data-state to 'unchecked'
+			set @aria-checked to 'false'
+			remove <svg/> from me
+			set the checked of next <input[name='` + name + `']/> to false
+		else
+			set @data-state to 'checked'
+			set @aria-checked to 'true'
+			put '<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>' into me
+			set the checked of next <input[name='` + name + `']/> to true
+		end`
+}

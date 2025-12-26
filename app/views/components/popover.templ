@@ -1,0 +1,47 @@
+package components
+
+// Popover renders a popover component with HTMX and Hyperscript
+templ Popover(id string, trigger templ.Component, content templ.Component, position string) {
+	<div class="relative inline-block">
+		<div _={ "on click toggle .hidden on #" + id }>
+			@trigger
+		</div>
+		<div
+			id={ id }
+			class={ getPopoverClasses(position) + " hidden" }
+			_="on click outside hide me"
+			role="dialog"
+		>
+			@content
+		</div>
+	</div>
+}
+
+// PopoverContent renders the content wrapper for a popover
+templ PopoverContent(children ...templ.Component) {
+	<div class="p-4">
+		for _, child := range children {
+			@child
+		}
+	</div>
+}
+
+func getPopoverClasses(position string) string {
+	baseClasses := "absolute z-50 w-72 rounded-md border border-slate-200 bg-white p-4 text-slate-950 shadow-md outline-none dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50"
+
+	var positionClasses string
+	switch position {
+	case "top":
+		positionClasses = "bottom-full left-1/2 -translate-x-1/2 mb-2"
+	case "bottom":
+		positionClasses = "top-full left-1/2 -translate-x-1/2 mt-2"
+	case "left":
+		positionClasses = "right-full top-0 mr-2"
+	case "right":
+		positionClasses = "left-full top-0 ml-2"
+	default:
+		positionClasses = "top-full left-0 mt-2"
+	}
+
+	return baseClasses + " " + positionClasses
+}

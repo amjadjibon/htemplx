@@ -1,0 +1,52 @@
+package components
+
+import "fmt"
+
+// AspectRatio renders a container with a specific aspect ratio
+templ AspectRatio(ratio string, children ...templ.Component) {
+	<div class="relative w-full" style={ getAspectRatioStyle(ratio) }>
+		<div class="absolute inset-0">
+			for _, child := range children {
+				@child
+			}
+		</div>
+	</div>
+}
+
+// AspectRatioImage renders an image with a specific aspect ratio
+templ AspectRatioImage(ratio string, src string, alt string) {
+	<div class="relative w-full overflow-hidden rounded-md" style={ getAspectRatioStyle(ratio) }>
+		<img src={ src } alt={ alt } class="absolute inset-0 h-full w-full object-cover"/>
+	</div>
+}
+
+// AspectRatioVideo renders a video with a specific aspect ratio
+templ AspectRatioVideo(ratio string, src string) {
+	<div class="relative w-full overflow-hidden rounded-md" style={ getAspectRatioStyle(ratio) }>
+		<video src={ src } class="absolute inset-0 h-full w-full" controls></video>
+	</div>
+}
+
+func getAspectRatioStyle(ratio string) string {
+	var paddingTop string
+
+	switch ratio {
+	case "16/9":
+		paddingTop = "56.25%"
+	case "4/3":
+		paddingTop = "75%"
+	case "1/1", "square":
+		paddingTop = "100%"
+	case "21/9":
+		paddingTop = "42.857%"
+	case "3/2":
+		paddingTop = "66.667%"
+	case "9/16":
+		paddingTop = "177.778%"
+	default:
+		// Try to parse custom ratio like "16/9"
+		paddingTop = "56.25%"
+	}
+
+	return fmt.Sprintf("padding-top: %s", paddingTop)
+}
