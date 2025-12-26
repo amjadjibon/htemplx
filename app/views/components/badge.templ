@@ -1,0 +1,60 @@
+package components
+
+// Badge variants: default, secondary, destructive, outline, success, warning
+
+// Badge renders a badge component
+templ Badge(text string, variant string) {
+	<div class={ getBadgeClasses(variant) }>
+		{ text }
+	</div>
+}
+
+// BadgeWithDot renders a badge with a status dot
+templ BadgeWithDot(text string, variant string) {
+	<div class={ getBadgeClasses(variant) }>
+		<span class="relative flex h-2 w-2 mr-1.5">
+			<span class={ "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 " + getDotColor(variant) }></span>
+			<span class={ "relative inline-flex rounded-full h-2 w-2 " + getDotColor(variant) }></span>
+		</span>
+		{ text }
+	</div>
+}
+
+// getBadgeClasses returns the CSS classes for different badge variants
+func getBadgeClasses(variant string) string {
+	baseClasses := "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 dark:focus:ring-slate-300"
+
+	var variantClasses string
+	switch variant {
+	case "secondary":
+		variantClasses = "border-transparent bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-700"
+	case "destructive":
+		variantClasses = "border-transparent bg-red-500 text-white hover:bg-red-600 dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-800"
+	case "outline":
+		variantClasses = "text-slate-950 dark:text-slate-50"
+	case "success":
+		variantClasses = "border-transparent bg-green-500 text-white hover:bg-green-600 dark:bg-green-900 dark:text-slate-50 dark:hover:bg-green-800"
+	case "warning":
+		variantClasses = "border-transparent bg-yellow-500 text-white hover:bg-yellow-600 dark:bg-yellow-900 dark:text-slate-50 dark:hover:bg-yellow-800"
+	default: // "default"
+		variantClasses = "border-transparent bg-slate-900 text-slate-50 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
+	}
+
+	return baseClasses + " " + variantClasses
+}
+
+// getDotColor returns the dot color for badge variants
+func getDotColor(variant string) string {
+	switch variant {
+	case "destructive":
+		return "bg-red-500"
+	case "success":
+		return "bg-green-500"
+	case "warning":
+		return "bg-yellow-500"
+	case "secondary":
+		return "bg-slate-500"
+	default:
+		return "bg-slate-900 dark:bg-slate-50"
+	}
+}

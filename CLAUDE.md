@@ -11,9 +11,10 @@ This document provides comprehensive guidance for AI assistants working with the
 5. [Development Workflows](#development-workflows)
 6. [Code Conventions](#code-conventions)
 7. [Common Tasks](#common-tasks)
-8. [Testing](#testing)
-9. [Deployment](#deployment)
-10. [Important Notes](#important-notes)
+8. [Shadcn-Style UI Components](#shadcn-style-ui-components)
+9. [Testing](#testing)
+10. [Deployment](#deployment)
+11. [Important Notes](#important-notes)
 
 ---
 
@@ -741,6 +742,124 @@ cfg := conf.NewConfig()  // Automatically parses env vars
    ```go
    r.Use(middlewares.MyMiddleware)
    ```
+
+---
+
+## Shadcn-Style UI Components
+
+The project includes a comprehensive set of shadcn-inspired UI components built with Templ. These components provide a modern, accessible design system that integrates seamlessly with HTMX.
+
+### Available Components
+
+All shadcn components are located in `app/views/components/` and include:
+
+1. **Button** (`button.templ`)
+   - Variants: default, destructive, outline, secondary, ghost, link
+   - Sizes: sm, default, lg, icon
+   - Components: Button, ButtonWithIcon, IconButton
+
+2. **Card** (`card.templ`)
+   - Components: Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+   - Pre-built: CardSimple, CardWithFooter
+
+3. **Input** (`input.templ`)
+   - Components: Input, InputWithLabel, InputWithError
+   - Additional: Textarea, TextareaWithLabel, Select, SelectWithLabel
+
+4. **Badge** (`badge.templ`)
+   - Variants: default, secondary, destructive, outline, success, warning
+   - Components: Badge, BadgeWithDot (animated)
+
+5. **Dialog** (`dialog.templ`)
+   - Components: Dialog, DialogSimple, DialogConfirm, AlertDialog
+   - Features: backdrop blur, click-outside-to-close, ARIA support
+
+6. **Tabs** (`tabs.templ`)
+   - Components: Tabs (HTMX), SimpleTabs (client-side)
+   - Supports lazy loading via HTMX
+
+7. **Skeleton** (`skeleton.templ`)
+   - Components: Skeleton, SkeletonText, SkeletonCard, SkeletonAvatar
+   - Pre-built: SkeletonTable, SkeletonList, SkeletonProfile, SkeletonCardGrid
+
+8. **Toast** (`toast.templ`)
+   - Variants: default, success, error, warning, info
+   - Components: Toast, ToastSimple, ToastContainer
+   - Auto-dismiss with manual close option
+
+### Quick Examples
+
+```templ
+// Button with HTMX
+@components.Button("Load More", "default", "default", templ.Attributes{
+    "hx-get": "/api/items",
+    "hx-target": "#items-list",
+})
+
+// Card with content
+@components.CardSimple("Dashboard", "Your overview", contentComponent)
+
+// Form inputs
+@components.InputWithLabel("Email", "email", "you@example.com", "email")
+@components.SelectWithLabel("Country", "country", []string{"USA", "UK"})
+
+// Status badge
+@components.BadgeWithDot("Active", "success")
+
+// Confirmation dialog
+@components.DialogConfirm("delete-dialog", "Delete Item",
+    "Are you sure?", "Delete", "Cancel", "/api/delete/123")
+
+// Loading skeleton
+@components.SkeletonCardGrid(6)
+
+// Toast notification
+@components.ToastSimple("toast-1", "Saved successfully", "success")
+```
+
+### Component Features
+
+- **Dark mode support** - All components support dark mode via Tailwind
+- **HTMX integration** - Designed to work with HTMX patterns
+- **Accessibility** - ARIA labels, keyboard navigation, focus management
+- **Type-safe** - Templ provides compile-time type checking
+- **Customizable** - Easy to modify Tailwind classes
+
+### Documentation
+
+For complete documentation with examples, see:
+- **[SHADCN_COMPONENTS.md](/docs/SHADCN_COMPONENTS.md)** - Comprehensive guide to all components
+
+### Usage in Handlers
+
+```go
+func (h *WebHandler) MyPage(w http.ResponseWriter, r *http.Request) {
+    loggedIn, err := h.IsLoggedIn(r)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    render(w, r, pages.PageWithComponents(loggedIn, "My Page"))
+}
+```
+
+```templ
+// In pages/my_page.templ
+templ PageWithComponents(loggedIn bool, title string) {
+    @layouts.Base(loggedIn, title) {
+        @components.Card(
+            components.CardHeader(
+                components.CardTitle("Welcome"),
+                components.CardDescription("Get started"),
+            ),
+            components.CardContent(
+                // Your content
+            ),
+        )
+    }
+}
+```
 
 ---
 

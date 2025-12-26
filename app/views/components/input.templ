@@ -1,0 +1,85 @@
+package components
+
+// Input renders a styled input field
+templ Input(inputType string, placeholder string, name string, attrs ...templ.Attributes) {
+	<input
+		type={ inputType }
+		name={ name }
+		placeholder={ placeholder }
+		class="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
+		{ attrs... }
+	/>
+}
+
+// InputWithLabel renders an input with a label
+templ InputWithLabel(label string, inputType string, placeholder string, name string, attrs ...templ.Attributes) {
+	<div class="grid w-full items-center gap-1.5">
+		<label for={ name } class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+			{ label }
+		</label>
+		@Input(inputType, placeholder, name, attrs...)
+	</div>
+}
+
+// InputWithError renders an input with error message
+templ InputWithError(label string, inputType string, placeholder string, name string, errorMsg string, attrs ...templ.Attributes) {
+	<div class="grid w-full items-center gap-1.5">
+		<label for={ name } class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+			{ label }
+		</label>
+		<input
+			type={ inputType }
+			name={ name }
+			placeholder={ placeholder }
+			class="flex h-10 w-full rounded-md border border-red-500 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-red-900 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-red-900"
+			{ attrs... }
+		/>
+		if errorMsg != "" {
+			<p class="text-sm text-red-500 dark:text-red-900">{ errorMsg }</p>
+		}
+	</div>
+}
+
+// Textarea renders a styled textarea
+templ Textarea(placeholder string, name string, rows int, attrs ...templ.Attributes) {
+	<textarea
+		name={ name }
+		placeholder={ placeholder }
+		rows={ templ.Attributes{"rows": rows} }
+		class="flex min-h-[80px] w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus-visible:ring-slate-300"
+		{ attrs... }
+	></textarea>
+}
+
+// TextareaWithLabel renders a textarea with label
+templ TextareaWithLabel(label string, placeholder string, name string, rows int, attrs ...templ.Attributes) {
+	<div class="grid w-full gap-1.5">
+		<label for={ name } class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+			{ label }
+		</label>
+		@Textarea(placeholder, name, rows, attrs...)
+	</div>
+}
+
+// Select renders a styled select dropdown
+templ Select(name string, options []string, attrs ...templ.Attributes) {
+	<select
+		name={ name }
+		class="flex h-10 w-full items-center justify-between rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 dark:focus:ring-slate-300"
+		{ attrs... }
+	>
+		for _, option := range options {
+			<option value={ option }>{ option }</option>
+		}
+	</select>
+}
+
+// SelectWithLabel renders a select with label
+templ SelectWithLabel(label string, name string, options []string, attrs ...templ.Attributes) {
+	<div class="grid w-full items-center gap-1.5">
+		<label for={ name } class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+			{ label }
+		</label>
+		@Select(name, options, attrs...)
+	</div>
+}

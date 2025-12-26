@@ -1,0 +1,114 @@
+package components
+
+// TabItem represents a single tab
+type TabItem struct {
+	ID      string
+	Label   string
+	Content templ.Component
+}
+
+// Tabs renders a tabbed interface with HTMX support
+templ Tabs(id string, tabs []TabItem, defaultTab string) {
+	<div class="w-full" id={ id }>
+		<!-- Tab list -->
+		<div class="inline-flex h-10 items-center justify-center rounded-md bg-slate-100 p-1 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+			for i, tab := range tabs {
+				<button
+					type="button"
+					class={ getTabButtonClasses(tab.ID == defaultTab) }
+					hx-get={ "/tabs/" + id + "/" + tab.ID }
+					hx-target={ "#" + id + "-content" }
+					hx-swap="innerHTML"
+					_={ `on click
+						set @data-state of <button/> in #` + id + ` to 'inactive'
+						set @data-state of me to 'active'
+						add .bg-white.text-slate-900.shadow-sm.dark:bg-slate-950.dark:text-slate-50 to me
+						remove .bg-white.text-slate-900.shadow-sm.dark:bg-slate-950.dark:text-slate-50 from <button/> in #` + id + ` when me is not it` }
+					data-state={ getTabState(tab.ID == defaultTab) }
+				>
+					{ tab.Label }
+				</button>
+			}
+		</div>
+		<!-- Tab content -->
+		<div id={ id + "-content" } class="mt-2">
+			for _, tab := range tabs {
+				if tab.ID == defaultTab {
+					@TabContent(tab.ID, tab.Content)
+				}
+			}
+		</div>
+	</div>
+}
+
+// TabContent renders the content for a tab panel
+templ TabContent(id string, content templ.Component) {
+	<div class="mt-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300" id={ id + "-panel" } role="tabpanel">
+		@content
+	</div>
+}
+
+// SimpleTabs renders tabs without HTMX (pure CSS/Hyperscript)
+templ SimpleTabs(id string, tabs []TabItem, defaultTab string) {
+	<div class="w-full" id={ id }>
+		<!-- Tab list -->
+		<div class="inline-flex h-10 items-center justify-center rounded-md bg-slate-100 p-1 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+			for _, tab := range tabs {
+				<button
+					type="button"
+					class={ getTabButtonClasses(tab.ID == defaultTab) }
+					_={ `on click
+						set @data-state of <button/> in #` + id + ` to 'inactive'
+						set @data-state of me to 'active'
+						add .bg-white.text-slate-900.shadow-sm.dark:bg-slate-950.dark:text-slate-50 to me
+						remove .bg-white.text-slate-900.shadow-sm.dark:bg-slate-950.dark:text-slate-50 from <button/> in #` + id + ` when me is not it
+						hide <div[role='tabpanel']/> in #` + id + `
+						show #` + tab.ID + `-panel` }
+					data-state={ getTabState(tab.ID == defaultTab) }
+				>
+					{ tab.Label }
+				</button>
+			}
+		</div>
+		<!-- Tab panels -->
+		<div class="mt-2">
+			for _, tab := range tabs {
+				<div
+					class={ getTabPanelClasses(tab.ID == defaultTab) }
+					id={ tab.ID + "-panel" }
+					role="tabpanel"
+				>
+					@tab.Content
+				</div>
+			}
+		</div>
+	</div>
+}
+
+// getTabButtonClasses returns classes for tab buttons
+func getTabButtonClasses(isActive bool) string {
+	baseClasses := "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+
+	if isActive {
+		return baseClasses + " bg-white text-slate-900 shadow-sm dark:bg-slate-950 dark:text-slate-50"
+	}
+	return baseClasses
+}
+
+// getTabState returns the data-state attribute value
+func getTabState(isActive bool) string {
+	if isActive {
+		return "active"
+	}
+	return "inactive"
+}
+
+// getTabPanelClasses returns classes for tab panels
+func getTabPanelClasses(isActive bool) string {
+	baseClasses := "ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+
+	if !isActive {
+		return baseClasses + " hidden"
+	}
+	return baseClasses
+}

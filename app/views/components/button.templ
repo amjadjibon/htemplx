@@ -1,0 +1,62 @@
+package components
+
+// Button variants: default, destructive, outline, secondary, ghost, link
+// Sizes: sm, default, lg, icon
+
+templ Button(text string, variant string, size string, attrs ...templ.Attributes) {
+	<button class={ getButtonClasses(variant, size) } { attrs... }>
+		{ text }
+	</button>
+}
+
+// ButtonWithIcon renders a button with an icon
+templ ButtonWithIcon(text string, icon templ.Component, variant string, size string, attrs ...templ.Attributes) {
+	<button class={ getButtonClasses(variant, size) } { attrs... }>
+		<div class="flex items-center gap-2">
+			@icon
+			<span>{ text }</span>
+		</div>
+	</button>
+}
+
+// IconButton renders a button with only an icon
+templ IconButton(icon templ.Component, variant string, attrs ...templ.Attributes) {
+	<button class={ getButtonClasses(variant, "icon") } { attrs... }>
+		@icon
+	</button>
+}
+
+// getButtonClasses returns the CSS classes for different button variants and sizes
+func getButtonClasses(variant string, size string) string {
+	baseClasses := "inline-flex items-center justify-center rounded-md font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300"
+
+	var variantClasses string
+	switch variant {
+	case "destructive":
+		variantClasses = "bg-red-500 text-white hover:bg-red-600 dark:bg-red-900 dark:text-slate-50 dark:hover:bg-red-800"
+	case "outline":
+		variantClasses = "border border-slate-200 bg-white hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+	case "secondary":
+		variantClasses = "bg-slate-100 text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-50 dark:hover:bg-slate-700"
+	case "ghost":
+		variantClasses = "hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-50"
+	case "link":
+		variantClasses = "text-slate-900 underline-offset-4 hover:underline dark:text-slate-50"
+	default: // "default"
+		variantClasses = "bg-slate-900 text-slate-50 hover:bg-slate-800 dark:bg-slate-50 dark:text-slate-900 dark:hover:bg-slate-200"
+	}
+
+	var sizeClasses string
+	switch size {
+	case "sm":
+		sizeClasses = "h-9 rounded-md px-3 text-xs"
+	case "lg":
+		sizeClasses = "h-11 rounded-md px-8"
+	case "icon":
+		sizeClasses = "h-10 w-10"
+	default: // "default"
+		sizeClasses = "h-10 px-4 py-2"
+	}
+
+	return baseClasses + " " + variantClasses + " " + sizeClasses
+}

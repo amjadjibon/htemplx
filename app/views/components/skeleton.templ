@@ -1,0 +1,126 @@
+package components
+
+// Skeleton renders a skeleton loader for loading states
+templ Skeleton(className string) {
+	<div class={ "animate-pulse rounded-md bg-slate-100 dark:bg-slate-800 " + className }></div>
+}
+
+// SkeletonText renders a text skeleton with multiple lines
+templ SkeletonText(lines int) {
+	<div class="space-y-2">
+		for i := 0; i < lines; i++ {
+			if i == lines-1 {
+				@Skeleton("h-4 w-3/4")
+			} else {
+				@Skeleton("h-4 w-full")
+			}
+		}
+	</div>
+}
+
+// SkeletonCard renders a card skeleton
+templ SkeletonCard() {
+	<div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+		<div class="space-y-4">
+			@Skeleton("h-6 w-1/2")
+			@SkeletonText(3)
+		</div>
+	</div>
+}
+
+// SkeletonAvatar renders an avatar skeleton
+templ SkeletonAvatar(size string) {
+	<div class={ getSkeletonAvatarClasses(size) }></div>
+}
+
+// SkeletonButton renders a button skeleton
+templ SkeletonButton(size string) {
+	if size == "sm" {
+		@Skeleton("h-9 w-20")
+	} else if size == "lg" {
+		@Skeleton("h-11 w-28")
+	} else {
+		@Skeleton("h-10 w-24")
+	}
+}
+
+// SkeletonInput renders an input skeleton
+templ SkeletonInput() {
+	@Skeleton("h-10 w-full")
+}
+
+// SkeletonTable renders a table skeleton
+templ SkeletonTable(rows int, cols int) {
+	<div class="w-full space-y-2">
+		<!-- Header -->
+		<div class="flex gap-4">
+			for i := 0; i < cols; i++ {
+				@Skeleton("h-8 flex-1")
+			}
+		</div>
+		<!-- Rows -->
+		for i := 0; i < rows; i++ {
+			<div class="flex gap-4">
+				for j := 0; j < cols; j++ {
+					@Skeleton("h-10 flex-1")
+				}
+			</div>
+		}
+	</div>
+}
+
+// SkeletonList renders a list skeleton
+templ SkeletonList(items int) {
+	<div class="space-y-3">
+		for i := 0; i < items; i++ {
+			<div class="flex items-center space-x-4">
+				@SkeletonAvatar("md")
+				<div class="flex-1 space-y-2">
+					@Skeleton("h-4 w-3/4")
+					@Skeleton("h-3 w-1/2")
+				</div>
+			</div>
+		}
+	</div>
+}
+
+// SkeletonCardGrid renders a grid of card skeletons
+templ SkeletonCardGrid(cards int) {
+	<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+		for i := 0; i < cards; i++ {
+			@SkeletonCard()
+		}
+	</div>
+}
+
+// SkeletonProfile renders a profile skeleton
+templ SkeletonProfile() {
+	<div class="flex items-start space-x-4">
+		@SkeletonAvatar("xl")
+		<div class="flex-1 space-y-3">
+			@Skeleton("h-6 w-48")
+			@Skeleton("h-4 w-32")
+			<div class="space-y-2 pt-2">
+				@SkeletonText(3)
+			</div>
+		</div>
+	</div>
+}
+
+// getSkeletonAvatarClasses returns the classes for avatar skeletons
+func getSkeletonAvatarClasses(size string) string {
+	baseClasses := "animate-pulse rounded-full bg-slate-100 dark:bg-slate-800"
+
+	switch size {
+	case "sm":
+		return baseClasses + " h-8 w-8"
+	case "md":
+		return baseClasses + " h-10 w-10"
+	case "lg":
+		return baseClasses + " h-12 w-12"
+	case "xl":
+		return baseClasses + " h-16 w-16"
+	default:
+		return baseClasses + " h-10 w-10"
+	}
+}
